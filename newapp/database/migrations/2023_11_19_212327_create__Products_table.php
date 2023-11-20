@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Productss', function (Blueprint $table) {
+        Schema::create('Products', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name_scientific');
             $table->string('name_trade');
             $table->string('type');
             $table->string('company');
-            $table->integer('warehouse_id')->unsigned();
             $table->integer('quantity');
             $table->date('ex_date');
             $table->integer('price');
+            $table->integer('user_id')->unsigned();
             $table->timestamps();
-            $table->foreign('warehouse_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
 
         });

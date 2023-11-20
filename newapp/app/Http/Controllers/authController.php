@@ -12,8 +12,9 @@ use Hash;
 class authController extends Controller
 {
 
-   public function register(Request $request)
+   public function register_warehouse(Request $request)
    {
+
     $validator=validator::make( $request->all(),[
        // 'name'=>'required|',
         'email'=>'required|email',
@@ -26,20 +27,21 @@ class authController extends Controller
     }
     $input = $request->all();
     $input['password'] = Hash::make($input['password']);
-    $warehouse = User::create($input);
-    $success['token'] = $warehouse->createToken('kareem')->accessToken;
-    $success['name'] = $warehouse->name;
-    return "sucees";
+    $input['admin'] = true;
+    $user = User::create($input);
+    $success['token'] = $user->createToken('kareem')->accessToken;
+    $success['name'] = $user->name;
+    return "success";
    }
 
 
 
-   public function login(Request $request)
+   public function login_warehouse(Request $request)
    {
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-        $warehouse = Auth::user();
-        $success['token'] = $warehouse->createToken('kareem')->accessToken;
-        $success['name'] = $warehouse->name;
+        $user = Auth::user();
+        $success['token'] = $user->createToken('kareem')->accessToken;
+        $success['name'] = $user->name;
         return "success";
     }
 
@@ -51,19 +53,17 @@ class authController extends Controller
 
 
 
-   public function logout()
+   public function logout_warehouse()
    {
     Session::flush();
     Auth::logout();
     if(Auth::logout())
     {
-    return response()->json([
-        'error'=>'ssss'],201);
+    return 'success';
 }
 else
 {
-    return response()->json([
-        'error'=>'dddd'],401);
+    return 'error';
 }
    }
    }

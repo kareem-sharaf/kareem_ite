@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('pharmacie_id')->unsigned();
-            $table->integer('warehouse_id')->unsigned();
+            $table->integer('user_id')->unsigned();
+         //   $table->integer('user_id')->unsigned();
             $table->string('status');
             $table->string('pay_status');
             $table->json('content');
             $table->timestamps();
 
 
-            $table->foreign('pharmacie_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('warehouse_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            //$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

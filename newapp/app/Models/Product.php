@@ -16,9 +16,9 @@ class Product extends Model
         'quantity',
         'ex_date',
         'price',
-        'warehouse_id',
+        'user_id',
     ];
-    public function warehouse()
+    public function user()
     {
         return $this->belongsTo('App/Models/User');
     }

@@ -11,8 +11,8 @@ class Order extends Model
     protected   $fillable=[
         'status',
         'pay_status',
-        'pharmacies_id',
-        'warehouse_id',
+        'user_id',
+        'user_id',
         'content',
 
 
@@ -22,7 +22,7 @@ class Order extends Model
         return $this->belongsTo('App/Models/User');
     }
 
-    public function pharmacie()
+    public function pharmacy()
     {
         return $this->belongsTo('App/Models/User');
     }

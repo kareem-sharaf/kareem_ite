@@ -17,10 +17,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'nubmer',
+        'number',
         'email',
         'password',
+        'admin',
     ];
 
     /**
@@ -42,12 +42,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
     public function products()
     {
-        return $this->hasMany('App/Modles/Product');
+        return $this->hasMany('App/Models/Product');
     }
     public function orders()
     {
-        return $this->hasMany('App/Modles/Order');
+        return $this->hasMany('App/Models/Order');
     }
 }
