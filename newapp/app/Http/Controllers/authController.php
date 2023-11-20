@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Controllers\BaseController as BaseController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use Hash;
-class authController extends Controller
+class authController extends BaseController
 {
 
 
@@ -19,13 +20,13 @@ class authController extends Controller
    {
 
     $validator=validator::make( $request->all(),[
-       // 'name'=>'required|',
+        'name'=>'required',
         'email'=>'required|email',
         'password'=>'required|min:8'
     ]);
     if($validator->fails())
     {
-        return "error";
+        return 'error';
 
     }
     $input = $request->all();
@@ -34,14 +35,14 @@ class authController extends Controller
     $user = User::create($input);
     $success['token'] = $user->createToken('kareem')->accessToken;
     $success['name'] = $user->name;
-    return "success";
+    return 'success';
    }
 
 
 
    public function login_warehouse(Request $request)
    {
-    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+    if (Auth::attempt(['name' => $request->name,'email' => $request->email, 'password' => $request->password])) {
         $user = Auth::user();
         $success['token'] = $user->createToken('kareem')->accessToken;
         $success['name'] = $user->name;
@@ -49,7 +50,7 @@ class authController extends Controller
     }
 
    else{
-        return "error";
+     return "error";
     }
    }
 
@@ -66,6 +67,7 @@ class authController extends Controller
    {
 
     $validator=validator::make( $request->all(),[
+        'name'=>'required',
         'number'=>'required|min:10',
         'password'=>'required|min:8'
     ]);
@@ -79,7 +81,7 @@ class authController extends Controller
     $input['admin'] = false;
     $user = User::create($input);
     $success['token'] = $user->createToken('kareem')->accessToken;
-    //$success['name'] = $user->name;
+    $success['name'] = $user->name;
     return "success";
    }
 
@@ -87,7 +89,7 @@ class authController extends Controller
 
    public function login_pharmacy(Request $request)
    {
-    if (Auth::attempt(['number' => $request->number, 'password' => $request->password])) {
+    if (Auth::attempt(['name' => $request->name,'number' => $request->number, 'password' => $request->password])) {
         $user = Auth::user();
         $success['token'] = $user->createToken('kareem')->accessToken;
         $success['name'] = $user->name;
