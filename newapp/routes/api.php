@@ -34,5 +34,4 @@ Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login
 
 Route::middleware('auth:api')->group( function () {
     Route::get('/logout',[App\Http\Controllers\authController::class,'logout']);
-//hello man
  });
