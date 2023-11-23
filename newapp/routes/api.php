@@ -34,4 +34,10 @@ Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login
 
 Route::middleware('auth:api')->group( function () {
     Route::get('/logout',[App\Http\Controllers\authController::class,'logout']);
+//router for products_warehouse
+Route::get('/warehouse/index',[App\Http\Controllers\WarehouseProductController::class,'index_warehouse']);
+Route::post('/warehouse/store',[App\Http\Controllers\WarehouseProductController::class,'store_warehouse']);
+Route::get('/warehouse/show/{id}',[App\Http\Controllers\WarehouseProductController::class,'show_warehouse']);
+Route::put('/warehouse/update/{id}',[App\Http\Controllers\WarehouseProductController::class,'update_warehouse']);
+Route::delete('/warehouse/destroy/{id}',[App\Http\Controllers\WarehouseProductController::class,'destroy_warehouse']);
  });
