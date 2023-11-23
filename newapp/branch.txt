@@ -1,5 +1,3 @@
-<<<<<<< HEAD
 kareem
-=======
+
 sharaf
->>>>>>> sharaf
