@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected $table = 'products';
     use HasFactory;
     protected   $fillable=[
         'name_scientific',
@@ -16,10 +17,15 @@ class Product extends Model
         'quantity',
         'ex_date',
         'price',
-        'user_id',
+        'warehouse_id',
     ];
-    public function user()
+    public function warehouse()
     {
-        return $this->belongsTo('App/Models/User');
+        return $this->belongsToMany('App/Models/User','warehouse_id');
+    }
+   
+    public function favorite()
+    {
+        return $this->hasOne('App/Models/Favoite');
     }
 }

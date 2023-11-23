@@ -9,6 +9,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
+    protected $table = 'users';
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -51,5 +52,9 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany('App/Models/Order');
+    }
+    public function favorites()
+    {
+        return $this->hasMany('App/Models/Favorite');
     }
 }

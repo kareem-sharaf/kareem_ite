@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Favorite extends Model
-{ protected   $fillable=[
+{ 
+    protected $table = 'favorites';
+    protected   $fillable=[
     
     
     'pharmacies_id',
