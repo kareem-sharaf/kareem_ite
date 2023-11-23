@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Http\Controllers\BaseController as BaseController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\ProductWarehouseController;
+
 use Validator;
 use Hash;
-class authController extends BaseController
+class authController extends Controller
 {
 
 
@@ -30,35 +31,6 @@ class authController extends BaseController
         ['email.unique'=>'email already taken'],
        [ 'password.required'=>'password is required']
 );
-
-
-
-
-
-
-
-
-
-
-
-/*
-    $validator=validator::make( $request->all(),[
-        'name'=>'required',
-        'email'=>'required|email',
-        'password'=>'required|min:8'
-    ]);
-    if($validator->fails())
-    {
-        $message="you must insert all infomration";
-        return response()->json(
-            [
-                'status'=>0,
-                'message'=>$message,
-            ],500
-        );
-
-    }
-*/
     $input = $request->all();
     $input['password'] = Hash::make($input['password']);
     $input['admin'] = true;
@@ -79,13 +51,19 @@ class authController extends BaseController
 
 
 
+
+
+
+
+
+
    public function login_warehouse(Request $request)
    {
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
         $user = Auth::user();
         $success['token'] = $user->createToken('kareem')->accessToken;
         $success['name'] = $user->name;
-       
+
 
         $message="Login completed";
         return response()->json(
@@ -130,22 +108,7 @@ class authController extends BaseController
         ['number.unique'=>'mobile number already taken'],
        [ 'password.required'=>'password is required']
 );
-
-   /* if($validator->fails())
-    {
-        if('number.unique'==='mobile number already taken')
-        $message="mobile number already taken";
-    else
-    $message="you must insert all infomration";
-        return response()->json(
-            [
-                'status'=>0,
-                'message'=>$message,
-            ],500
-        );
-
-    }*/
-    $input = $request->all();
+   $input = $request->all();
     $input['password'] = Hash::make($input['password']);
     $input['admin'] = false;
     $user = User::create($input);
@@ -178,43 +141,18 @@ class authController extends BaseController
        [ 'password.required'=>'password is required']
 );
 
-
-
-
-
-
-
-/*
-
-    $validator=validator::make( $request->all(),[
-        'name'=>'required',
-        'number'=>'required|min:10|exists:users,number',
-        'password'=>'required|min:8'
-    ]);
-
-    if($validator->fails())
-    {
-        $message="you must insert all infomration";
-        return response()->json(
-            [
-                'status'=>0,
-                'message'=>$message,
-            ]
-            ,500 );
-    }
-*/
-    if (Auth::attempt(['number' => $request->number, 'password' => $request->password])) {
+ if (Auth::attempt(['number' => $request->number, 'password' => $request->password])) {
         $user = Auth::user();
         $success['token'] = $user->createToken('kareem')->accessToken;
         $success['name'] = $user->name;
-       
+
         $message="Login completed";
         return response()->json(
             [
                 'status'=>1,
                 'message'=>$message,
                 'data'=>$success,
-                
+
             ]);
     }
 
@@ -230,19 +168,22 @@ class authController extends BaseController
     }
    }
 
+
+
+
    public function logout(Request $request)
    {
 
 $token= Auth::user()->token();
 $token->revoke();
-    
+
 
     return response()->json(
         [
             'status'=>1,
-            'message'=>'logout succssuflly',
+            'message'=>'logout success',
             'data'=>[],
-          
+
         ]
     );
 
