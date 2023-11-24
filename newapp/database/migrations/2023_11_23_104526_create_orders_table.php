@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-         //   $table->integer('user_id')->unsigned();
+            $table->integer('warehouse_id');
+        //    $table->integer('warehouse_id')->unsigned();
             $table->string('status');
             $table->string('pay_status');
             $table->json('content');
@@ -22,8 +23,9 @@ return new class extends Migration
 
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            //$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+          //  $table->foreign('warehouse_id')->references('warehouse_id')->on('products')->onDelete('cascade');
         });
+
     }
 
     /**

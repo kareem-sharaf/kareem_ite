@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class orderController extends Controller
 {
 
-  // DONT FORGET TO SEND THE WAREOSUE_ID !!!!!
+  // DON'T FORGET TO SEND THE WAREHOUSE_ID !!!!!
 
 
   // in the json file send the id and name and quantity
@@ -22,13 +22,13 @@ class orderController extends Controller
 
     'content'=>'required'
    ]
-   ,['content.required'=>'there is no contnet in the order']);
+   ,['content.required'=>'there is no content in the order']);
 
   Order::create([
     'user_id'=>auth()->id(),
     'status'=>'pending',
     'pay_status'=>'pending',
-    //or take the warehouse_id from the contnet
+    //or take the warehouse_id from the content
     'warehouse_id'=>$request->warehouse_id,
     'content'=> json_encode($request->content)
   ]);
@@ -44,9 +44,9 @@ class orderController extends Controller
 
   public function accept_ignore_order(request $request)
   {
-   
+
   }
-  
+
   public function all_orders_in_warehouse()
   {
     $warehouse_id=auth()->id();
@@ -88,7 +88,7 @@ class orderController extends Controller
     return response()->json(
         [
           'status'=>1,
-            'message'=>'orders retured successfully',
+            'message'=>'orders returned successfully',
             'data'=>$orders
         ]
         );
@@ -100,11 +100,11 @@ class orderController extends Controller
 
   public function edit_status(request $request)
   {
-    //delete order from pharmacy when reseved
+    //delete order from pharmacy when reseaved
     $order=Order::get()->where('id',$request->id)->first();
-  
-  
-  
+
+
+
     if($order==null)
     {
        return response()->json(

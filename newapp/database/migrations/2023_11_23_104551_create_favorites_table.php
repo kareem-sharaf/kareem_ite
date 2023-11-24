@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('favorites', function (Blueprint $table) {
         $table->increments('id');
         $table->unsignedInteger('product_id')->unsigned();
-        $table->unsignedInteger('pharmacie_id')->unsigned();
+        $table->unsignedInteger('pharmacy_id')->unsigned();
         $table->unsignedInteger('warehouse_id')->unsigned();
         $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('pharmacie_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('pharmacy_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('warehouse_id')->references('id')->on('users')->onDelete('cascade');
-           
+
     });
 
     }
