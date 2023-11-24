@@ -49,16 +49,26 @@ Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login
 Route::middleware('auth:api')->group( function () {
 
 
-    Route::post('/pharmacy/edit_order_for_pharmacy',[App\Http\Controllers\orderController::class,'edit_order_for_pharmacy']);
+Route::post('/pharmacy/edit_order_for_pharmacy',[App\Http\Controllers\orderController::class,'edit_order_for_pharmacy']);
 
-    Route::get('/pharmacy/order_info_for_pharmacy',[App\Http\Controllers\orderController::class,'order_info_for_pharmacy']);
-   
-    Route::post('/pharmacy/delete_order_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_pharmacy']);
-    
-    Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
+Route::get('/pharmacy/order_info_for_pharmacy',[App\Http\Controllers\orderController::class,'order_info_for_pharmacy']);
 
+Route::post('/pharmacy/delete_order_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_pharmacy']);
+
+Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
+
+
+Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
 
 Route::post('/pharmacy/create_order',[App\Http\Controllers\orderController::class,'create_order']);
+
+//router for products_warehouse
+Route::get('/warehouse/index',[App\Http\Controllers\WarehouseProductController::class,'index_warehouse']);
+Route::post('/warehouse/store',[App\Http\Controllers\WarehouseProductController::class,'store_warehouse']);
+Route::get('/warehouse/show/{id}',[App\Http\Controllers\WarehouseProductController::class,'show_warehouse']);
+Route::put('/warehouse/update/{id}',[App\Http\Controllers\WarehouseProductController::class,'update_warehouse']);
+Route::delete('/warehouse/destroy/{id}',[App\Http\Controllers\WarehouseProductController::class,'destroy_warehouse']);
+
 });
 
 
