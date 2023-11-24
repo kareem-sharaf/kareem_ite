@@ -48,8 +48,16 @@ Route::post('/pharmacy/register',[App\Http\Controllers\authController::class,'re
 Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login_pharmacy']);
 Route::middleware('auth:api')->group( function () {
 
-    Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
+
+    Route::post('/pharmacy/edit_order_for_pharmacy',[App\Http\Controllers\orderController::class,'edit_order_for_pharmacy']);
+
+    Route::get('/pharmacy/order_info_for_pharmacy',[App\Http\Controllers\orderController::class,'order_info_for_pharmacy']);
    
+    Route::post('/pharmacy/delete_order_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_pharmacy']);
+    
+    Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
+
+
 Route::post('/pharmacy/create_order',[App\Http\Controllers\orderController::class,'create_order']);
 });
 

@@ -123,14 +123,25 @@ if($order->status=="delivered")
   $json_file=$order->content;
 
  $content=json_decode($json_file,TRUE);
-// dd($content);
+
+
 foreach($content as $key )
 {
-  //dd($key->id);
-$product=Product::where('id',$key->id)->get();
-//dd($product);
-$product->quantity=$product->quantity-$key->quantity;
-$product->save();
+ $id=$key['product_id'];
+
+$order_quantity=(int)$key['quantity'];
+
+$product=Product::where('id',$id)->get('quantity')->first();
+$old_quantity=$product->quantity;
+
+$sum=$old_quantity-$order_quantity;
+
+$update_product_quantity=Product::find($id);
+
+$update_product_quantity->quantity=$sum;
+
+$update_product_quantity->save();
+
 //send notifaction to the warehouse
 }
 }
@@ -139,19 +150,86 @@ $product->save();
         'status'=>1,
           'message'=>'orders updated successfully',
           'data'=>$order
+          
       ]
       );
   }
 
-  public function edit_status_pharmacy(request $request)
+  public function edit_order_for_pharmacy(request $request)
   {
+    $pharmacy=auth()->user();
+    $order=Order::get()->where('id',$request->id)->first();
+    if($order->status=="pending"||$order->status=="In preparation")
+    {
+      $s=$order->content;
+      dd($s);
+    }
   }
   public function delete_order_pharmacy(request $request)
   {
-  }
-
-  public function order_info(request $request)
+    $pharmacy=auth()->user();
+    $order=Order::get()->where('id',$request->id)->first();
+   // dd($pharmacy->id);
+    if($order==null)
+    {
+       return response()->json(
+      [
+        'status'=>0,
+          'message'=>'the order not found',
+          'data'=>[]
+      ]
+      );
+    }
+    else
+    {
+      if($pharmacy->id==$order->user_id)
+      {
+      $order->delete();
+      return response()->json(
+        [
+          'status'=>1,
+            'message'=>'the order deleted successfully',
+            'data'=>$order
+        ]
+        );
+    }
+  
+  else
   {
+    return response()->json(
+      [
+        'status'=>0,
+          'message'=>'you are not the order owner',
+          'data'=>[]
+      ]
+      );
+  }
+  }
+  }
+  public function order_info_for_pharmacy(request $request)
+  {
+    $order=Order::get()->where('id',$request->id)->first();
+    //dd($order);
+    if($order==null)
+    {
+       return response()->json(
+      [
+        'status'=>0,
+          'message'=>'the order not found',
+          'data'=>$order
+      ]
+      );
+    }
+    else
+    {
+      return response()->json(
+        [
+          'status'=>1,
+            'message'=>'the order information returned successfully',
+            'data'=>$order
+        ]
+        );
+    }
   }
 
 
