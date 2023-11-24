@@ -15,7 +15,7 @@ class WarehouseProductController extends Controller
     $user = auth()->user();
     $id = $user->id;
 
-    $product = Product::where('user_id', $id)->get('name_scientific');
+    $product = Product::where('warehouse_id', $id)->get('name_scientific');
     $message = "this is the all products";
 
     return response()->json([
@@ -55,7 +55,7 @@ class WarehouseProductController extends Controller
     //اذا كان المنتج موجود سابقا فقط عدل الكمية
         $user = auth()->user();
         $id = $user->id;
-        $existingProduct = Product::where('user_id', $id)
+        $existingProduct = Product::where('warehouse_id', $id)
                             ->where('name_scientific', $input['name_scientific'])
                             ->where('name_trade', $input['name_trade'])
                             ->where('type', $input['type'])
@@ -77,7 +77,7 @@ class WarehouseProductController extends Controller
 //اذا لم يكن المنتج موجود اضف منتجا جديدا
 
         $user = Auth::user();
-        $input['user_id'] = $user->id;
+        $input['warehouse_id'] = $user->id;
         $product = Product::create($input);
         $message="add product successfully";
         return response()->json(
@@ -91,11 +91,14 @@ class WarehouseProductController extends Controller
     }
 
 
-    public function show_warehouse($id_product)
+    public function show_warehouse($name)
 {
     $user = auth()->user();
     $id = $user->id;
-    $product = Product::where('user_id', $id)->find($id_product);
+    $product = Product::where('warehouse_id', $id)
+                        ->where('name_scientific', $name)
+                        ->orwhere('type', $name)
+                        ->get(['name_scientific', 'type']);
 
     if (is_null($product)) {
         $message = "The product doesn't exist.";
@@ -120,8 +123,8 @@ public function update_warehouse(Request $request,$product_id)
 {
         $user = auth()->user();
         $id = $user->id;
-        $product = Product::where('user_id', $id)->find($product_id);
-    if ($user->id !== $product['user_id']) {
+        $product = Product::where('warehouse_id', $id)->find($product_id);
+    if ($user->id !== $product['warehouse_id']) {
         $message = "You are not authorized to update this product.";
         return response()->json([
             'status' => 0,
@@ -173,7 +176,7 @@ public function update_warehouse(Request $request,$product_id)
         //delete the products which the warehouse want deleted it.
         $user = auth()->user();
         $id = $user->id;
-        $product = Product::where('user_id', $id)->find($id_product);
+        $product = Product::where('warehouse_id', $id)->find($id_product);
         if (is_null($product)) {
             $message = "The product doesn't exist.";
             return response()->json([
