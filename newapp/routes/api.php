@@ -25,6 +25,8 @@ Route::post('/warehouse/register',[App\Http\Controllers\authController::class,'r
 Route::post('/warehouse/login',[App\Http\Controllers\authController::class,'login_warehouse']);
 Route::post('/pharmacy/register',[App\Http\Controllers\authController::class,'register_pharmacy']);
 Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login_pharmacy']);
+Route::post('/warehouse/forget',[App\Http\Controllers\authController::class,'warehouse_forget']);
+Route::post('/pharmacy/forget',[App\Http\Controllers\authController::class,'pharmacy_forget']);
 
 Route::middleware('auth:api')->group( function () {
 //Routes for products_warehouse

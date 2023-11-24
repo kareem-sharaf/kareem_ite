@@ -24,12 +24,15 @@ class authController extends Controller
     $request->validate([
         'name'=>'required',
         'email'=>'required|min:10|unique:users,email',
-        'password'=>'required|min:8'
+        'password'=>'required|min:8',
+        'number'=>'required|min:10|unique:users,number',
     ]
     ,['name.required'=>'name is required'],
-        ['email.required'=>'email is required',],
+        ['email.required'=>'email is required'],
         ['email.unique'=>'email already taken'],
-       [ 'password.required'=>'password is required']
+       [ 'password.required'=>'password is required'],
+       ['number.required'=>'number is required'],
+       ['number.unique'=>'number already taken'],
 );
     $input = $request->all();
     $input['password'] = Hash::make($input['password']);
@@ -101,12 +104,15 @@ class authController extends Controller
    $request->validate([
         'name'=>'required',
         'number'=>'required|min:10|unique:users,number',
-        'password'=>'required|min:8'
+        'password'=>'required|min:8',
+        'email'=>'required|min:10|unique:users,email',
     ]
     ,['name.required'=>'name is required'],
-        ['number.required'=>'mobile number is required',],
+        ['number.required'=>'mobile number is required'],
         ['number.unique'=>'mobile number already taken'],
-       [ 'password.required'=>'password is required']
+        [ 'password.required'=>'password is required'],
+        ['email.required'=>'email is required'],
+        ['email.unique'=>'email already taken'],
 );
    $input = $request->all();
     $input['password'] = Hash::make($input['password']);
@@ -168,7 +174,69 @@ class authController extends Controller
     }
    }
 
+    public function warehouse_forget(Request $request){
+        if (Auth::attempt(['number' => $request->number])) {
+            $user = Auth::user();
+            $success['token'] = $user->createToken('kareem')->accessToken;
+            $success['name'] = $user->name;
 
+
+            $message="Login completed";
+            return response()->json(
+                [
+                    'status'=>1,
+                    'message'=>$message,
+                    'data'=>$success,
+                ]);
+        }
+
+       else{
+        $message="wrong number ";
+        return response()->json(
+            [
+                'status'=>0,
+                'message'=>$message,
+                'data'=>[],
+            ]
+            ,500 );
+        }
+    }
+
+
+    public function pharmacy_forget(Request $request){
+        $request->validate([
+            'email'=>'required|min:10',
+        ]
+    ,
+            ['email.required'=>'email is required',],
+    );
+
+    if (Auth::attempt(['email' => $request->email])) {
+        $user = Auth::user();
+        $success['token'] = $user->createToken('kareem')->accessToken;
+        $success['name'] = $user->name;
+
+        $message="Login completed";
+        return response()->json(
+            [
+                'status'=>1,
+                'message'=>$message,
+                'data'=>$success,
+
+            ]);
+    }
+
+    else{
+    $message="wrong email ";
+    return response()->json(
+        [
+            'status'=>0,
+            'message'=>$message,
+            'data'=>[],
+        ]
+    );
+    }
+    }
 
 
    public function logout(Request $request)
@@ -188,4 +256,6 @@ $token->revoke();
     );
 
 }
+
+
 }
