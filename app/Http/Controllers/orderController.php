@@ -159,10 +159,53 @@ $update_product_quantity->save();
   {
     $pharmacy=auth()->user();
     $order=Order::get()->where('id',$request->id)->first();
+
+
+    if($order==null)
+    {
+       return response()->json(
+      [
+        'status'=>0,
+          'message'=>'the order not found',
+          'data'=>$order
+      ]
+      );
+    }
+
+ if($pharmacy->id!=$order->user_id)
+ {
+  return response()->json(
+    [
+      'status'=>0,
+        'message'=>'your are not the order owner',
+        'data'=>[]
+    ]
+    );
+ }
+
     if($order->status=="pending"||$order->status=="In preparation")
     {
-      $s=$order->content;
-      dd($s);
+
+      $order->content=$request->content;
+      $order->save();
+      return response()->json(
+        [
+          'status'=>1,
+            'message'=>'orders updated successfully',
+            'data'=>$order
+            
+        ]
+        );
+    }
+    else
+    {
+      return response()->json(
+        [
+          'status'=>0,
+            'message'=>'you cant edit the order becuase Delivery is in progress  ',
+            'data'=>[]
+        ]
+        );
     }
   }
   public function delete_order_pharmacy(request $request)
