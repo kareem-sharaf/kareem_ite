@@ -31,6 +31,9 @@ class WarehouseProductController extends Controller
 
     public function store_warehouse(Request $request)
     {
+        $user = auth()->user();
+        $id = $user->id;
+        if($user->admin){
         $input = $request->all();
         $validator = Validator::make($input,[
             'name_scientific'=>'required',
@@ -53,8 +56,7 @@ class WarehouseProductController extends Controller
         }
 
     //اذا كان المنتج موجود سابقا فقط عدل الكمية
-        $user = auth()->user();
-        $id = $user->id;
+
         $existingProduct = Product::where('warehouse_id', $id)
                             ->where('name_scientific', $input['name_scientific'])
                             ->where('name_trade', $input['name_trade'])
@@ -88,7 +90,16 @@ class WarehouseProductController extends Controller
             ]
         );
 
+    }else{
+        $message="you can't add products ";
+        return response()->json(
+            [
+                'status'=>0,
+                'message'=>$message
+            ]
+        );
     }
+}
 
 
     public function show_warehouse($name)
