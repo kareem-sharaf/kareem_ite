@@ -25,6 +25,18 @@ Route::post('/warehouse/register',[App\Http\Controllers\authController::class,'r
 Route::post('/warehouse/login',[App\Http\Controllers\authController::class,'login_warehouse']);
 Route::post('/pharmacy/register',[App\Http\Controllers\authController::class,'register_pharmacy']);
 Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login_pharmacy']);
+Route::post('/warehouse/forget',[App\Http\Controllers\authController::class,'warehouse_forget']);
+Route::post('/pharmacy/forget',[App\Http\Controllers\authController::class,'pharmacy_forget']);
+
+Route::middleware('auth:api')->group( function () {
+Route::post('/warehouse/resetpassword',[App\Http\Controllers\authController::class,'warehouse_reset_password']);
+Route::post('/pharmacy/resetpassword',[App\Http\Controllers\authController::class,'pharmacy_reset_password']);
+Route::post('/warehouse/edit_information',[App\Http\Controllers\authController::class,'warehouse_edit_info']);
+Route::post('/pharmacy/edit_information',[App\Http\Controllers\authController::class,'pharmacy_edit_info']);
+Route::delete('/warehouse/delete_user',[App\Http\Controllers\authController::class,'warehouse_delete']);
+Route::delete('/pharmacy/delete_user',[App\Http\Controllers\authController::class,'pharmacy_delete']);
+});
+
 
 Route::middleware('auth:api')->group( function () {
 
