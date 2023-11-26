@@ -34,12 +34,11 @@ class orderController extends Controller
   ]);
   return response()->json(
     [
-      'status'=>1,
+        'status'=>1,
         'message'=>'orders created successfully',
         'data'=>$request->content
     ]
     );
-
   }
 
   public function accept_ignore_order(request $request)
