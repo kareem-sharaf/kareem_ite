@@ -163,7 +163,7 @@ public function search_to_product_for_pharmacy($name)
 
 
 public function show_all_warehouses()
-    {
+{
         $warehouse = User::where('admin', true)->get('name');
         $message = "this is the all warehouses";
 
@@ -175,7 +175,24 @@ public function show_all_warehouses()
     }
 
 
-public function edit_product(Request $request,$product_id)
+
+
+    public function show_one_warehouse($id)
+    {
+
+        $product = Product::where('warehouse_id', $id)->get('name_scientific');
+        $message = "this is the all products";
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'data' => $product,
+        ]);
+    }
+
+
+
+
+    public function edit_product(Request $request,$product_id)
 {
         $user = auth()->user();
         $id = $user->id;
