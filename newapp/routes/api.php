@@ -3,9 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\authController;
-use App\Http\Controllers\WarehouseProductController;
-use App\Http\Controllers\PharmacyProductController;
-use App\Http\Controllers\PharmacyWarehouseController;
+use App\Http\Controllers\ProductController;
 
 use Laravel\Passport\Passport;
 
@@ -14,11 +12,29 @@ Route::post('/info',function(request $request)
     return Auth::user();
 });
 
+
+
+
+
+//Routes for order.
+Route::get('/warehouse/all_orders_in_warehouse',[App\Http\Controllers\orderController::class,'all_orders_in_warehouse']);
+Route::post('/warehouse/store_warehouse',[App\Http\Controllers\productController::class,'store_warehouse']);
+Route::post('/warehouse/edit_status',[App\Http\Controllers\orderController::class,'edit_status']);
 Route::middleware('auth:api')->group( function () {
-   Route::get('/logout',[App\Http\Controllers\authController::class,'logout']);
-   Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
-   Route::post('/pharmacy/create_order',[App\Http\Controllers\orderController::class,'create_order']);
+Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
+Route::post('/pharmacy/create_order',[App\Http\Controllers\orderController::class,'create_order']);
 });
+//*********
+
+
+
+
+
+
+
+
+
+
 
 //Routes for Auth.
 Route::post('/warehouse/register',[App\Http\Controllers\authController::class,'register_warehouse']);
@@ -29,31 +45,22 @@ Route::post('/warehouse/forget',[App\Http\Controllers\authController::class,'war
 Route::post('/pharmacy/forget',[App\Http\Controllers\authController::class,'pharmacy_forget']);
 
 Route::middleware('auth:api')->group( function () {
-Route::post('/warehouse/resetpassword',[App\Http\Controllers\authController::class,'warehouse_reset_password']);
-Route::post('/pharmacy/resetpassword',[App\Http\Controllers\authController::class,'pharmacy_reset_password']);
-Route::post('/warehouse/edit_information',[App\Http\Controllers\authController::class,'warehouse_edit_info']);
-Route::post('/pharmacy/edit_information',[App\Http\Controllers\authController::class,'pharmacy_edit_info']);
-Route::delete('/warehouse/delete_user',[App\Http\Controllers\authController::class,'warehouse_delete']);
-Route::delete('/pharmacy/delete_user',[App\Http\Controllers\authController::class,'pharmacy_delete']);
+Route::get('/logout',[App\Http\Controllers\authController::class,'logout']);
+Route::post('/reset_password',[App\Http\Controllers\authController::class,'reset_password']);
+Route::post('/edit_information',[App\Http\Controllers\authController::class,'edit_info']);
+Route::delete('/delete_user',[App\Http\Controllers\authController::class,'delete_the_user']);
 });
+//*********
 
 
+
+
+
+
+
+
+//Routes for products.
 Route::middleware('auth:api')->group( function () {
-
-
-Route::post('/pharmacy/edit_order_for_pharmacy',[App\Http\Controllers\orderController::class,'edit_order_for_pharmacy']);
-
-Route::get('/pharmacy/order_info_for_pharmacy',[App\Http\Controllers\orderController::class,'order_info_for_pharmacy']);
-
-Route::post('/pharmacy/delete_order_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_pharmacy']);
-
-Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
-
-
-Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
-
-Route::post('/pharmacy/create_order',[App\Http\Controllers\orderController::class,'create_order']);
-
 //Routes for products_warehouse
 Route::get('/warehouse/index',[App\Http\Controllers\WarehouseProductController::class,'index_warehouse']);
 Route::post('/warehouse/store',[App\Http\Controllers\WarehouseProductController::class,'store_warehouse']);

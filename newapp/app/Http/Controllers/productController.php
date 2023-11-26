@@ -7,10 +7,10 @@ use Validator;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-class WarehouseProductController extends Controller
+class ProductController extends Controller
 {
 
-    public function index_warehouse()
+    public function show_all_products_to_warehouse()
 {
     $user = auth()->user();
     $id = $user->id;
@@ -27,9 +27,21 @@ class WarehouseProductController extends Controller
 
 
 
+        public function show_all_products()
+    {
+        $product = Product::get('name_scientific');
+        $message = "this is the all products";
+
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'data' => $product,
+        ]);
+    }
 
 
-    public function store_warehouse(Request $request)
+
+    public function create_products(Request $request)
     {
         $user = auth()->user();
         $id = $user->id;
@@ -102,7 +114,7 @@ class WarehouseProductController extends Controller
 }
 
 
-    public function show_warehouse($name)
+    public function search_to_product_for_warehouse($name)
 {
     $user = auth()->user();
     $id = $user->id;
@@ -127,10 +139,43 @@ class WarehouseProductController extends Controller
     ]);
 }
 
+public function search_to_product_for_pharmacy($name)
+{
+    $product = Product::where('name_scientific', $name)
+                        ->orwhere('type', $name)
+                        ->get(['name_scientific', 'type']);
+
+    if (is_null($product)) {
+        $message = "The product doesn't exist.";
+        return response()->json([
+            'status' => 0,
+            'message' => $message,
+        ]);
+    }
+
+    $message = "This is the product.";
+    return response()->json([
+        'status' => 1,
+        'message' => $message,
+        'data' => $product,
+    ]);
+}
 
 
+public function show_all_warehouses()
+    {
+        $warehouse = User::where('admin', true)->get('name');
+        $message = "this is the all warehouses";
 
-public function update_warehouse(Request $request,$product_id)
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'data' => $warehouse,
+        ]);
+    }
+
+
+public function edit_product(Request $request,$product_id)
 {
         $user = auth()->user();
         $id = $user->id;
@@ -182,7 +227,7 @@ public function update_warehouse(Request $request,$product_id)
 
 
 
-    public function destroy_warehouse($id_product)
+    public function delete_product($id_product)
     {
         //delete the products which the warehouse want deleted it.
         $user = auth()->user();
