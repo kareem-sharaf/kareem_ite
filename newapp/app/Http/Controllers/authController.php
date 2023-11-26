@@ -52,7 +52,38 @@ class authController extends Controller
 
 
 
+   public function register_pharmacy(Request $request)
+   {
 
+   $request->validate([
+        'name'=>'required',
+        'number'=>'required|min:10|unique:users,number',
+        'password'=>'required|min:8',
+        'email'=>'required|min:10|unique:users,email',
+    ]
+    ,['name.required'=>'name is required'],
+        ['number.required'=>'mobile number is required'],
+        ['number.unique'=>'mobile number already taken'],
+        [ 'password.required'=>'password is required'],
+        ['email.required'=>'email is required'],
+        ['email.unique'=>'email already taken'],
+   );
+   $input = $request->all();
+    $input['password'] = Hash::make($input['password']);
+    $input['admin'] = false;
+    $user = User::create($input);
+    $success['token'] = $user->createToken('kareem')->accessToken;
+    $success['name'] = $user->name;
+
+    $message="Registration completed";
+        return response()->json(
+            [
+                'status'=>1,
+                'message'=>$message,
+                'data'=>$success,
+            ]
+        );
+   }
 
 
 
@@ -89,159 +120,11 @@ class authController extends Controller
 
 
 
-   public function warehouse_forget(Request $request)
-{
-    $user = User::where('email', $request->input('email'))
-                ->where('number', $request->input('number'))
-                ->first();
-
-    if($user){
-        $token = $user->createToken('kareem')->accessToken;
-        $message = "check the user";
-        return response()->json([
-            'status' => 1,
-            'message' => $message,
-            'token' => $token,
-        ]);
-    } else {
-        $message = "wrong inputs";
-        return response()->json([
-            'status' => 0,
-            'message' => $message,
-            'token' => null,
-        ]);
-    }
-}
-
-
-
-public function warehouse_reset_password(Request $request)
-{
-    $user = auth()->user();
-
-    $newPassword = $request->input('new_password');
-    $user->password = bcrypt($newPassword);
-    $user->save();
-
-    $token = $user->createToken('kareem')->accessToken;
-        $message = "Login completed";
-        return response()->json([
-            'status' => 1,
-            'message' => $message,
-            'token' => $token,
-        ]);
-    }
-
-
-
-    public function warehouse_edit_info(Request $request){
-        $user = auth()->user();
-
-        if($request->has('name')){
-            $user->name = $request->input('name');
-        }
-
-        if($request->has('password')){
-            $user->password = bcrypt($request->input('password'));
-        }
-
-        if($request->has('number')){
-            $user->number = $request->input('number');
-        }
-
-        $user->save();
-
-        $message = "the information updated successfully";
-        return response()->json([
-            'status' => 1,
-            'message' => $message,
-        ]);
-    }
-
-
-    public function warehouse_delete(Request $request){
-        $user = auth()->user();
-        $user->delete();
-        $message = "The user deleted successfully.";
-         return response()->json([
-        'status' => 1,
-        'message' => $message,
-        'data' => $user,
-    ]);
-
-    }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//functions for pharmacy
-
-public function register_pharmacy(Request $request)
-{
-
-$request->validate([
-     'name'=>'required',
-     'number'=>'required|min:10|unique:users,number',
-     'password'=>'required|min:8',
-     'email'=>'required|min:10|unique:users,email',
- ]
- ,['name.required'=>'name is required'],
-     ['number.required'=>'mobile number is required'],
-     ['number.unique'=>'mobile number already taken'],
-     [ 'password.required'=>'password is required'],
-     ['email.required'=>'email is required'],
-     ['email.unique'=>'email already taken'],
-);
-$input = $request->all();
- $input['password'] = Hash::make($input['password']);
- $input['admin'] = false;
- $user = User::create($input);
- $success['token'] = $user->createToken('kareem')->accessToken;
- $success['name'] = $user->name;
-
- $message="Registration completed";
-     return response()->json(
-         [
-             'status'=>1,
-             'message'=>$message,
-             'data'=>$success,
-         ]
-     );
-}
-
-
-
-
-
-public function login_pharmacy(Request $request)
+   public function login_pharmacy(Request $request)
 {
 
 
@@ -281,6 +164,57 @@ else{
  );
  }
 }
+
+
+
+public function logout(Request $request)
+{
+
+$token= Auth::user()->token();
+$token->revoke();
+
+
+ return response()->json(
+     [
+         'status'=>1,
+         'message'=>'logout success',
+         'data'=>[],
+
+     ]
+ );
+
+}
+
+
+
+   public function warehouse_forget(Request $request)
+{
+    $user = User::where('email', $request->input('email'))
+                ->where('number', $request->input('number'))
+                ->first();
+
+    if($user){
+        $token = $user->createToken('kareem')->accessToken;
+        $message = "check the user";
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'token' => $token,
+        ]);
+    } else {
+        $message = "wrong inputs";
+        return response()->json([
+            'status' => 0,
+            'message' => $message,
+            'token' => null,
+        ]);
+    }
+}
+
+
+
+
+
 public function pharmacy_forget(Request $request)
 {
     $user = User::where('email', $request->input('email'))
@@ -307,7 +241,7 @@ public function pharmacy_forget(Request $request)
 
 
 
-public function pharmacy_reset_password(Request $request)
+public function reset_password(Request $request)
 {
     $user = auth()->user();
 
@@ -325,7 +259,8 @@ public function pharmacy_reset_password(Request $request)
     }
 
 
-    public function pharmacy_edit_info(Request $request){
+
+    public function edit_info(Request $request){
         $user = auth()->user();
 
         if($request->has('name')){
@@ -350,7 +285,10 @@ public function pharmacy_reset_password(Request $request)
     }
 
 
-    public function pharmacy_delete(Request $request){
+
+
+
+    public function delete_the_user(Request $request){
         $user = auth()->user();
         $user->delete();
         $message = "The user deleted successfully.";
@@ -362,35 +300,4 @@ public function pharmacy_reset_password(Request $request)
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-   public function logout(Request $request)
-   {
-
-$token= Auth::user()->token();
-$token->revoke();
-
-
-    return response()->json(
-        [
-            'status'=>1,
-            'message'=>'logout success',
-            'data'=>[],
-
-        ]
-    );
-
-}
-
-
-}
+ }
