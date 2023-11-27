@@ -46,9 +46,6 @@ Route::post('/create_product',[App\Http\Controllers\ProductController::class,'cr
 Route::get('/warehouse/searching/{name}',[App\Http\Controllers\ProductController::class,'search_to_product_for_warehouse']);
 Route::put('/edit_product/{id}',[App\Http\Controllers\ProductController::class,'edit_product']);
 Route::delete('/delete_product/{id}',[App\Http\Controllers\ProductController::class,'delete_product']);
-
-Route::get('/hello',[App\Http\Controllers\ReportController::class,'create_reports']);
-
 });
 Route::get('/all_products',[App\Http\Controllers\ProductController::class,'show_all_products']);
 Route::get('/pharmacy/searching/{name}',[App\Http\Controllers\ProductController::class,'search_to_product_for_pharmacy']);
