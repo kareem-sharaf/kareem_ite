@@ -132,17 +132,17 @@ public function create_order(request $request)
   public function edit_order_warehouse(Request $request,$order_id)
   {
 
-          $user = auth()->user();
-          $id = $user->id;
-          if($user->admin){
-          $order = Order::where('warehouse_id', $id)->find($order_id);
-      if ($user->id !== $order['warehouse_id']) {
-          $message = "You are not authorized to update this order.";
-          return response()->json([
-              'status' => 0,
-              'message' => $message,
-          ]);
-      }
+    $user = auth()->user();
+    $id = $user->id;
+    if ($user->admin) {
+        $order = Order::where('warehouse_id', $id)->find($order_id);
+        if (!$order) {
+            $message = "The order does not exist or you are not authorized to update this order.";
+            return response()->json([
+                'status' => 0,
+                'message' => $message,
+            ]);
+        }
 
       $input = $request->all();
       $validator = Validator::make($input, [
@@ -160,21 +160,24 @@ public function create_order(request $request)
       }
 
       $order->status = $input['status'];
-      $order->pay_status = $input['pay_status'];
-      $order->save();
+        $order->pay_status = $input['pay_status'];
+        $order->save();
 
-      if ($order->status !== 'pending') {
-        $order = Order::where('id', $order_id)
-                        ->where('status', '!=', 'pending')
-                        ->delete();
+        if ($order->status !== 'pending') {
+            $report = new Report;
+            $report->warehouse_id = $order->warehouse_id;
+            $report->pharmacy_id = $order->user_id;
+            $report->order_id = $order->id;
+            $report->save();
+        }
+
+        $message = "The order has been updated successfully.";
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'data' => $order
+        ]);
     }
-      $message = "The order has been updated successfully.";
-      return response()->json([
-          'status' => 1,
-          'message' => $message,
-          'data' => $order
-      ]);
-  }
   }
 
 

@@ -9,16 +9,20 @@ class Report extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
-        'content',
-        'date'
+        'pharmacy_id',
+        'warehouse_id',
+        'order_id',
     ];
 
 
 
 
-    public function user()
+    public function warehouses()
     {
-        return $this->belongsTo('App/Models/User','user_id');
+        return $this->belongsToMany('App/Models/User','warehouse_id');
+    }
+    public function pharmacies()
+    {
+        return $this->belongsToMany('App/Models/User','pharmacy_id');
     }
 }

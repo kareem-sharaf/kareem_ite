@@ -63,7 +63,7 @@ Route::get('/search_pharmacy',[App\Http\Controllers\orderController::class,'sear
 Route::post('/create_order',[App\Http\Controllers\orderController::class,'create_order']);
 Route::post('/edit_orders_warehouse/{id}',[App\Http\Controllers\orderController::class,'edit_order_warehouse']);
 Route::post('/edit_orders_pharmacy/{id}',[App\Http\Controllers\orderController::class,'edit_order_pharmacy']);
-Route::delete('/delete_orders_warehouse',[App\Http\Controllers\orderController::class,'delete_order_to_warehouse']);
+Route::delete('/delete_orders_warehouse/{id}',[App\Http\Controllers\orderController::class,'delete_order_to_warehouse']);
 Route::delete('/delete_orders_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_to_pharmacy']);
 });
 //************

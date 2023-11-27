@@ -11,18 +11,12 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function show_all_reports()
+    public function show_all_reports_warehouse($date)
 {
     $user = auth()->user();
     $id = $user->id;
 
-    $report = Report::where('user_id', $id)->get('date');
-    $message = "this is the all reports for you";
-    return response()->json([
-        'status' => 1,
-        'message' => $message,
-        'data' => $report,
-    ]);
+
 }
 
 public function create_reports()
