@@ -67,3 +67,10 @@ Route::delete('/delete_orders_warehouse/{id}',[App\Http\Controllers\orderControl
 Route::delete('/delete_orders_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_to_pharmacy']);
 });
 //************
+
+
+
+//Routes for reports.
+Route::middleware('auth:api')->group( function () {
+    Route::get('/all_reports_warehouse',[App\Http\Controllers\ReportController::class,'show_all_reports_warehouse']);
+});

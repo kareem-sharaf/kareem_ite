@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Report;
 
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -144,20 +146,20 @@ public function create_order(request $request)
             ]);
         }
 
-      $input = $request->all();
-      $validator = Validator::make($input, [
-          'status' => 'required',
-          'pay_status' => 'required'
-      ]);
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'status' => 'required',
+            'pay_status' => 'required'
+        ]);
 
-      if ($validator->fails()) {
-          $message = "There is an error in the inputs.";
-          return response()->json([
-              'status' => 0,
-              'message' => $message,
-              'data' => $input,
-          ]);
-      }
+        if ($validator->fails()) {
+            $message = "There is an error in the inputs.";
+            return response()->json([
+                'status' => 0,
+                'message' => $message,
+                'data' => $input,
+            ]);
+        }
 
       $order->status = $input['status'];
         $order->pay_status = $input['pay_status'];
