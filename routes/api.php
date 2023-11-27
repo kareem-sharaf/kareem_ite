@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\authController;
 use Laravel\Passport\Passport;
+use App\Notifications\CreateOrder;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +50,7 @@ Route::post('/pharmacy/register',[App\Http\Controllers\authController::class,'re
 Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login_pharmacy']);
 Route::middleware('auth:api')->group( function () {
 
-
+    Route::post('/pharmacy/notification',[App\Http\Controllers\orderController::class,'notification']);
     Route::post('/pharmacy/edit_order_for_pharmacy',[App\Http\Controllers\orderController::class,'edit_order_for_pharmacy']);
 
     Route::get('/pharmacy/order_info_for_pharmacy',[App\Http\Controllers\orderController::class,'order_info_for_pharmacy']);

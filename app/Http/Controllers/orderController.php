@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Notifications\CreateOrder;
+use Illuminate\Support\Facades\Notification;
+
 
 use App\Models\User;
 use Auth;
@@ -24,14 +27,20 @@ class orderController extends Controller
    ]
    ,['content.required'=>'there is no contnet in the order']);
 
-  Order::create([
+  $order=Order::create([
     'user_id'=>auth()->id(),
     'status'=>'pending',
     'pay_status'=>'pending',
     //or take the warehouse_id from the contnet
     'warehouse_id'=>$request->warehouse_id,
     'content'=> json_encode($request->content)
+   
   ]);
+ /* $user_id=auth()->id();
+$warehouse_id=$request->warehouse_id;
+$order_id=$order->id;
+$the_id=User::where('id',$warehouse_id)->get();
+   Notification::send($the_id,new CreateOrder($order_id,$user_id));*/
   return response()->json(
     [
       'status'=>1,
@@ -42,8 +51,15 @@ class orderController extends Controller
 
   }
 
-  public function accept_ignore_order(request $request)
-  {
+  public function notification(request $request)
+  {  $user_id=auth()->id();
+  //  dd($user_id);
+    $warehouse_id=$request->warehouse_id;
+    //dd($warehouse_id);
+   // $order_id=$order->id;
+    $the_id=User::where('id',1)->get();
+    dd( is_object($the_id));
+  Notification::send($the_id,new CreateOrder($user_id));
    
   }
   

@@ -45,6 +45,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function routeNotificationFor()
+    {
+        return $this->email_address; //You e-mail property here
+    }
+
     public function products()
     {
         return $this->hasMany('App/Models/Product');
