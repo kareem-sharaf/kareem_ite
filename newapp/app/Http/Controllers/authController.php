@@ -54,28 +54,28 @@ class authController extends Controller
 
    public function register_pharmacy(Request $request)
    {
-
-   $request->validate([
+    $request->validate([
         'name'=>'required',
-        'number'=>'required|min:10|unique:users,number',
-        'password'=>'required|min:8',
         'email'=>'required|min:10|unique:users,email',
+        'password'=>'required|min:8',
+        'number'=>'required|min:10|unique:users,number',
     ]
     ,['name.required'=>'name is required'],
-        ['number.required'=>'mobile number is required'],
-        ['number.unique'=>'mobile number already taken'],
-        [ 'password.required'=>'password is required'],
         ['email.required'=>'email is required'],
         ['email.unique'=>'email already taken'],
-   );
-   $input = $request->all();
+       [ 'password.required'=>'password is required'],
+       ['number.required'=>'number is required'],
+       ['number.unique'=>'number already taken'],
+);
+    $input = $request->all();
     $input['password'] = Hash::make($input['password']);
     $input['admin'] = false;
     $user = User::create($input);
     $success['token'] = $user->createToken('kareem')->accessToken;
     $success['name'] = $user->name;
 
-    $message="Registration completed";
+
+       $message="Registration completed";
         return response()->json(
             [
                 'status'=>1,

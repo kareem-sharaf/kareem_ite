@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\orderController;
 
 use Laravel\Passport\Passport;
 
@@ -11,27 +13,6 @@ Route::post('/info',function(request $request)
 {
     return Auth::user();
 });
-
-
-
-
-
-//Routes for order.
-Route::middleware('auth:api')->group( function () {
-Route::get('/pharmacy/all_orders_in_pharmacy',[App\Http\Controllers\orderController::class,'all_orders_in_pharmacy']);
-Route::post('/pharmacy/create_order',[App\Http\Controllers\orderController::class,'create_order']);
-Route::get('/warehouse/all_orders_in_warehouse',[App\Http\Controllers\orderController::class,'all_orders_in_warehouse']);
-Route::post('/warehouse/edit_status',[App\Http\Controllers\orderController::class,'edit_status']);
-});
-//*********
-
-
-
-
-
-
-
-
 
 
 
@@ -65,8 +46,27 @@ Route::post('/create_product',[App\Http\Controllers\ProductController::class,'cr
 Route::get('/warehouse/searching/{name}',[App\Http\Controllers\ProductController::class,'search_to_product_for_warehouse']);
 Route::put('/edit_product/{id}',[App\Http\Controllers\ProductController::class,'edit_product']);
 Route::delete('/delete_product/{id}',[App\Http\Controllers\ProductController::class,'delete_product']);
+
+Route::get('/hello',[App\Http\Controllers\ReportController::class,'create_reports']);
+
 });
 Route::get('/all_products',[App\Http\Controllers\ProductController::class,'show_all_products']);
 Route::get('/pharmacy/searching/{name}',[App\Http\Controllers\ProductController::class,'search_to_product_for_pharmacy']);
-Route::get('/show_all_warehouses',[App\Http\Controllers\ProductController::class,'show_all_warehouses']);
+Route::get('/show_all_warehouses',[App\Http\Controllers\ReportController::class,'show_all_warehouses']);
 //****************
+
+
+
+//Routes for orders.
+Route::middleware('auth:api')->group( function () {
+Route::get('/all_orders_warehouse',[App\Http\Controllers\orderController::class,'show_all_orders_to_warehouse']);
+Route::get('/all_orders_pharmacy',[App\Http\Controllers\orderController::class,'show_all_orders_to_pharmacy']);
+Route::get('/search_warehouse',[App\Http\Controllers\orderController::class,'search_to_order_for_warehouse']);
+Route::get('/search_pharmacy',[App\Http\Controllers\orderController::class,'search_to_order_for_pharmacy']);
+Route::post('/create_order',[App\Http\Controllers\orderController::class,'create_order']);
+Route::post('/edit_orders_warehouse/{id}',[App\Http\Controllers\orderController::class,'edit_order_warehouse']);
+Route::post('/edit_orders_pharmacy/{id}',[App\Http\Controllers\orderController::class,'edit_order_pharmacy']);
+Route::delete('/delete_orders_warehouse',[App\Http\Controllers\orderController::class,'delete_order_to_warehouse']);
+Route::delete('/delete_orders_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_to_pharmacy']);
+});
+//************

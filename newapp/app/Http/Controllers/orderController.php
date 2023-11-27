@@ -11,268 +11,283 @@ use Illuminate\Http\Request;
 
 class orderController extends Controller
 {
-
-  // DON'T FORGET TO SEND THE WAREHOUSE_ID !!!!!
-
-
-  // in the json file send the id and name and quantity
-  public function create_order(request $request)
-  {
-   $request->validate([
-
-    'content'=>'required'
-   ]
-   ,['content.required'=>'there is no content in the order']);
-
-  Order::create([
-    'user_id'=>auth()->id(),
-    'status'=>'pending',
-    'pay_status'=>'pending',
-    //or take the warehouse_id from the content
-    'warehouse_id'=>$request->warehouse_id,
-    'content'=> json_encode($request->content)
-  ]);
-  return response()->json(
-    [
-        'status'=>1,
-        'message'=>'orders created successfully',
-        'data'=>$request->content
-    ]
-    );
-  }
-
-  public function accept_ignore_order(request $request)
-  {
-
-  }
-
-  public function all_orders_in_warehouse()
-  {
-    $warehouse_id=auth()->id();
-    $orders=Order::where('warehouse_id',$warehouse_id)->get();
-    if($orders==null)
+    public function show_all_orders_to_warehouse()
     {
-      return response()->json(
-        [
-          'status'=>0,
-            'message'=>'there is no orders in the warehouse',
-            'data'=>$orders
-        ]
-        );
+        $user = auth()->user();
+        $id = $user->id;
+
+        $order = Order::where('warehouse_id', $id)->get('user_id');
+        $message = "this is the all orders";
+
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'data' => $order,
+        ]);
     }
-    return response()->json(
-        [
-          'status'=>1,
-            'message'=>'orders returned successfully',
-            'data'=>$orders
-        ]
-        );
-  }
 
 
-  public function all_orders_in_pharmacy()
-  {
-    $pharmacy=Auth::id();
-    $orders=Order::get()->where('user_id',$pharmacy);
-    if($orders==null)
+    public function show_all_orders_to_pharmacy()
     {
-      return response()->json(
-        [
-          'status'=>0,
-            'message'=>'there is no orders in the pharmacy',
-            'data'=>$orders
-        ]
-        );
+        $user = auth()->user();
+        $id = $user->id;
+
+        $order = Order::where('user_id', $id)->get('warehouse_id');
+        $message = "this is the all orders";
+
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'data' => $order,
+        ]);
     }
-    return response()->json(
-        [
-          'status'=>1,
-            'message'=>'orders returned successfully',
-            'data'=>$orders
-        ]
-        );
-  }
-
-//front should sent id with status & pay_status UNTIL NOW !
-
-// In preparation   Delivery is in progress    delivered
-
-  public function edit_status(request $request)
-  {
-    //delete order from pharmacy when reseaved
-    $order=Order::get()->where('id',$request->id)->first();
 
 
-
-    if($order==null)
-    {
-       return response()->json(
-      [
-        'status'=>0,
-          'message'=>'the order not found',
-          'data'=>$order
-      ]
-      );
-    }
-    $order->status=$request->status;
-    $order->pay_status=$request->pay_status;
-    $order->save();
-if($order->status=="delivered")
+    public function search_to_order_for_warehouse($order_id)
 {
-  $json_file=$order->content;
+    $user = auth()->user();
+    $id = $user->id;
+    $order = Order::where('warehouse_id', $id)
+                        ->where('id', $order_id)
+                        ->get(['user_id']);
 
- $content=json_decode($json_file,TRUE);
-
-
-foreach($content as $key )
-{
- $id=$key['product_id'];
-
-$order_quantity=(int)$key['quantity'];
-
-$product=Product::where('id',$id)->get('quantity')->first();
-$old_quantity=$product->quantity;
-
-$sum=$old_quantity-$order_quantity;
-
-$update_product_quantity=Product::find($id);
-
-$update_product_quantity->quantity=$sum;
-
-$update_product_quantity->save();
-
-//send notifaction to the warehouse
-}
-}
-    return response()->json(
-      [
-        'status'=>1,
-          'message'=>'orders updated successfully',
-          'data'=>$order
-          
-      ]
-      );
-  }
-
-  public function edit_order_for_pharmacy(request $request)
-  {
-    $pharmacy=auth()->user();
-    $order=Order::get()->where('id',$request->id)->first();
-
-
-    if($order==null)
-    {
-       return response()->json(
-      [
-        'status'=>0,
-          'message'=>'the order not found',
-          'data'=>$order
-      ]
-      );
+    if (is_null($order)) {
+        $message = "The order doesn't exist.";
+        return response()->json([
+            'status' => 0,
+            'message' => $message,
+        ]);
     }
 
- if($pharmacy->id!=$order->user_id)
- {
-  return response()->json(
-    [
-      'status'=>0,
-        'message'=>'your are not the order owner',
-        'data'=>[]
-    ]
-    );
- }
+    $message = "This is the order.";
+    return response()->json([
+        'status' => 1,
+        'message' => $message,
+        'data' => $order,
+    ]);
+}
 
-    if($order->status=="pending"||$order->status=="In preparation")
-    {
+public function search_to_order_for_pharmacy($order_id)
+{
+    $user = auth()->user();
+    $id = $user->id;
+    $order = Order::where('user_id', $id)
+                        ->where('id', $order_id)
+                        ->get(['warehouse_id']);
 
-      $order->content=$request->content;
+    if (is_null($order)) {
+        $message = "The order doesn't exist.";
+        return response()->json([
+            'status' => 0,
+            'message' => $message,
+        ]);
+    }
+
+    $message = "This is the order.";
+    return response()->json([
+        'status' => 1,
+        'message' => $message,
+        'data' => $order,
+    ]);
+}
+
+
+public function create_order(request $request)
+  { $user = auth()->user();
+    $id = $user->id;
+    if(!$user->admin){
+        $request->validate([
+            'content'=>'required|array',
+            'content.*.product_id'=>'required|integer',
+            'content.*.quantity'=>'required|integer|min:1'
+        ],
+        ['content.required'=>'there is no content in the order']);
+
+        foreach($request->content as $item){
+            $product = Product::find($item['product_id']);
+            $product->quantity -= $item['quantity'];
+            $product->save();
+                }
+            }
+
+
+        Order::create([
+            'user_id'=>$id,
+            'status'=>'pending',
+            'pay_status'=>'pending',
+            'warehouse_id'=>$request->warehouse_id,
+            'content'=> json_encode($request->content)
+        ]);
+
+        return response()->json(
+            [
+                'status'=>1,
+                'message'=>'orders created successfully',
+                'data'=>$request->content
+            ]
+        );
+    }
+
+
+  public function edit_order_warehouse(Request $request,$order_id)
+  {
+
+          $user = auth()->user();
+          $id = $user->id;
+          if($user->admin){
+          $order = Order::where('warehouse_id', $id)->find($order_id);
+      if ($user->id !== $order['warehouse_id']) {
+          $message = "You are not authorized to update this order.";
+          return response()->json([
+              'status' => 0,
+              'message' => $message,
+          ]);
+      }
+
+      $input = $request->all();
+      $validator = Validator::make($input, [
+          'status' => 'required',
+          'pay_status' => 'required'
+      ]);
+
+      if ($validator->fails()) {
+          $message = "There is an error in the inputs.";
+          return response()->json([
+              'status' => 0,
+              'message' => $message,
+              'data' => $input,
+          ]);
+      }
+
+      $order->status = $input['status'];
+      $order->pay_status = $input['pay_status'];
       $order->save();
-      return response()->json(
-        [
-          'status'=>1,
-            'message'=>'orders updated successfully',
-            'data'=>$order
-            
-        ]
-        );
+
+      if ($order->status !== 'pending') {
+        $order = Order::where('id', $order_id)
+                        ->where('status', '!=', 'pending')
+                        ->delete();
     }
-    else
-    {
-      return response()->json(
-        [
-          'status'=>0,
-            'message'=>'you cant edit the order becuase Delivery is in progress  ',
-            'data'=>[]
-        ]
-        );
+      $message = "The order has been updated successfully.";
+      return response()->json([
+          'status' => 1,
+          'message' => $message,
+          'data' => $order
+      ]);
+  }
+  }
+
+
+  public function edit_order_pharmacy(Request $request,$order_id)
+  {
+    $user = auth()->user();
+    $id = $user->id;
+
+    if (!$user->admin) {
+        $order = Order::where('user_id', $id)->find($order_id);
+
+        if ($user->id !== $order['user_id']) {
+            $message = "You are not authorized to update this order.";
+            return response()->json([
+                'status' => 0,
+                'message' => $message,
+            ]);
+        }
+
+        if ($order->status !== 'pending') {
+            $message = "you cant edit the order because Delivery is in progress.";
+            return response()->json([
+                'status' => 0,
+                'message' => $message,
+            ]);
+        }
+
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'content' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $message = "There is an error in the inputs.";
+            return response()->json([
+                'status' => 0,
+                'message' => $message,
+                'data' => $input,
+            ]);
+        }
+
+        $order->content = $input['content'];
+        $order->save();
+
+        foreach ($request->content as $item) {
+            $product = Product::find($item['product_id']);
+            $product->quantity -= $item['quantity'];
+            $product->save();
+        }
+
+        $message = "The order has been updated successfully.";
+        return response()->json([
+            'status' => 1,
+            'message' => $message,
+            'data' => $order
+        ]);
     }
   }
-  public function delete_order_pharmacy(request $request)
+
+  public function delete_order_to_warehouse($id_order)
   {
-    $pharmacy=auth()->user();
-    $order=Order::get()->where('id',$request->id)->first();
-   // dd($pharmacy->id);
-    if($order==null)
-    {
-       return response()->json(
-      [
-        'status'=>0,
-          'message'=>'the order not found',
-          'data'=>[]
-      ]
-      );
-    }
-    else
-    {
-      if($pharmacy->id==$order->user_id)
-      {
+      $user = auth()->user();
+      $id = $user->id;
+      $order = Order::where('warehouse_id', $id)->find($id_order);
+      if (is_null($order)) {
+          $message = "The order doesn't exist.";
+          return response()->json([
+              'status' => 0,
+              'message' => $message,
+          ]);
+      }
       $order->delete();
-      return response()->json(
-        [
-          'status'=>1,
-            'message'=>'the order deleted successfully',
-            'data'=>$order
-        ]
-        );
-    }
-  
-  else
+      $message = "The order deleted successfully.";
+       return response()->json([
+      'status' => 1,
+      'message' => $message,
+      'data' => $order,
+  ]);
+
+  }
+
+
+
+  public function delete_order_to_pharmacy($id_order)
   {
-    return response()->json(
-      [
-        'status'=>0,
-          'message'=>'you are not the order owner',
-          'data'=>[]
-      ]
-      );
+      $user = auth()->user();
+      $id = $user->id;
+      $order = Order::where('user_id', $id)->find($id_order);
+      if (is_null($order)) {
+          $message = "The order doesn't exist.";
+          return response()->json([
+              'status' => 0,
+              'message' => $message,
+          ]);
+      }
+      if ($order->status == 'pending') {
+      $order->delete();
+      $message = "The order deleted successfully.";
+       return response()->json([
+      'status' => 1,
+      'message' => $message,
+      'data' => $order,
+  ]);
+      }else{
+        $message = "you cant edit the order because Delivery is in progress.";
+        return response()->json([
+       'status' => 1,
+       'message' => $message,
+   ]);
+      }
   }
-  }
-  }
-  public function order_info_for_pharmacy(request $request)
-  {
-    $order=Order::get()->where('id',$request->id)->first();
-    //dd($order);
-    if($order==null)
-    {
-       return response()->json(
-      [
-        'status'=>0,
-          'message'=>'the order not found',
-          'data'=>$order
-      ]
-      );
-    }
-    else
-    {
-      return response()->json(
-        [
-          'status'=>1,
-            'message'=>'the order information returned successfully',
-            'data'=>$order
-        ]
-        );
-    }
-  }
+
+
 
 
 }
