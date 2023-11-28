@@ -174,7 +174,7 @@ public function show_all_warehouses()
         ]);
     }
 
-
+//sdf
 
 
     public function show_one_warehouse($id)
