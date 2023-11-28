@@ -8,11 +8,29 @@ use App\Models\Report;
 
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Validator;
 use Auth;
 use Illuminate\Http\Request;
-
+//use App\Http\Controllers\Notification;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\CreateOrder;
 class orderController extends Controller
 {
+
+
+
+    public function notification(request $request)
+    {  $user_id=auth()->id();
+    //  dd($user_id);
+      $warehouse_id=$request->warehouse_id;
+      //dd($warehouse_id);
+     // $order_id=$order->id;
+      $the_id=User::where('id',1)->get();
+      dd( is_object($the_id));
+    Notification::send($the_id,new CreateOrder($user_id));
+     
+    }
+
     public function show_all_orders_to_warehouse()
     {
         $user = auth()->user();

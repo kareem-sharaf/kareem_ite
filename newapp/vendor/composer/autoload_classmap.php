@@ -6,9 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\Ex_date' => $baseDir . '/app/Console/Commands/Ex_date.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
+    'App\\Http\\Controllers\\ReportController' => $baseDir . '/app/Http/Controllers/ReportController.php',
     'App\\Http\\Controllers\\authController' => $baseDir . '/app/Http/Controllers/authController.php',
     'App\\Http\\Controllers\\orderController' => $baseDir . '/app/Http/Controllers/orderController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
@@ -24,7 +26,9 @@ return array(
     'App\\Models\\Favorite' => $baseDir . '/app/Models/Favorite.php',
     'App\\Models\\Order' => $baseDir . '/app/Models/Order.php',
     'App\\Models\\Product' => $baseDir . '/app/Models/Product.php',
+    'App\\Models\\Report' => $baseDir . '/app/Models/Report.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
+    'App\\Notifications\\CreateOrder' => $baseDir . '/app/Notifications/CreateOrder.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
     'App\\Providers\\BroadcastServiceProvider' => $baseDir . '/app/Providers/BroadcastServiceProvider.php',
@@ -2114,6 +2118,7 @@ return array(
     'Illuminate\\Support\\MultipleInstanceManager' => $vendorDir . '/laravel/framework/src/Illuminate/Support/MultipleInstanceManager.php',
     'Illuminate\\Support\\MultipleItemsFoundException' => $vendorDir . '/laravel/framework/src/Illuminate/Collections/MultipleItemsFoundException.php',
     'Illuminate\\Support\\NamespacedItemResolver' => $vendorDir . '/laravel/framework/src/Illuminate/Support/NamespacedItemResolver.php',
+    'Illuminate\\Support\\Number' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Number.php',
     'Illuminate\\Support\\Optional' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Optional.php',
     'Illuminate\\Support\\Pluralizer' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Pluralizer.php',
     'Illuminate\\Support\\ProcessUtils' => $vendorDir . '/laravel/framework/src/Illuminate/Support/ProcessUtils.php',
@@ -2125,6 +2130,7 @@ return array(
     'Illuminate\\Support\\Testing\\Fakes\\BatchFake' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Testing/Fakes/BatchFake.php',
     'Illuminate\\Support\\Testing\\Fakes\\BatchRepositoryFake' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Testing/Fakes/BatchRepositoryFake.php',
     'Illuminate\\Support\\Testing\\Fakes\\BusFake' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Testing/Fakes/BusFake.php',
+    'Illuminate\\Support\\Testing\\Fakes\\ChainedBatchTruthTest' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Testing/Fakes/ChainedBatchTruthTest.php',
     'Illuminate\\Support\\Testing\\Fakes\\EventFake' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Testing/Fakes/EventFake.php',
     'Illuminate\\Support\\Testing\\Fakes\\Fake' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Testing/Fakes/Fake.php',
     'Illuminate\\Support\\Testing\\Fakes\\MailFake' => $vendorDir . '/laravel/framework/src/Illuminate/Support/Testing/Fakes/MailFake.php',
