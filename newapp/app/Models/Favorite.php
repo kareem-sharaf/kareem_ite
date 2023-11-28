@@ -11,7 +11,7 @@ class Favorite extends Model
     protected   $fillable=[
     
     
-    'pharmacies_id',
+    'pharmacy_id',
     'warehouse_id',
     'product_id',
 ];
@@ -20,7 +20,7 @@ class Favorite extends Model
 
     public function pharmacie()
     {
-        return $this->belongsTo('App/Models/User','pharmacie_id');
+        return $this->belongsTo('App/Models/User','pharmacy_id');
     }
     public function warehouse()
     {
