@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Report;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use Validator;
 use Auth;
 use Illuminate\Http\Request;
 //use App\Http\Controllers\Notification;
@@ -28,7 +27,7 @@ class orderController extends Controller
       $the_id=User::where('id',1)->get();
       dd( is_object($the_id));
     Notification::send($the_id,new CreateOrder($user_id));
-     
+
     }
 
     public function show_all_orders_to_warehouse()
@@ -113,7 +112,8 @@ public function search_to_order_for_pharmacy($order_id)
 
 
 public function create_order(request $request)
-  { $user = auth()->user();
+  {
+    $user = auth()->user();
     $id = $user->id;
     if(!$user->admin){
         $request->validate([
@@ -125,10 +125,26 @@ public function create_order(request $request)
 
         foreach($request->content as $item){
             $product = Product::find($item['product_id']);
-            $product->quantity -= $item['quantity'];
-            $product->save();
-                }
+            if ($item['quantity'] < 0) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'invalid quantity for product with ID ' . $item['product_id'],
+                ]);
+            } else if ($item['quantity'] > $product->quantity) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'quantity exceeds available stock for product with ID ' . $item['product_id'],
+                ]);
+            } else {
+                $product->quantity -= $item['quantity'];
+                $product->save();
             }
+        }
+
+            }
+            $currentDate = Carbon::now();
+            $year = $currentDate->year;
+            $month = $currentDate->month;
 
 
         Order::create([
@@ -136,7 +152,9 @@ public function create_order(request $request)
             'status'=>'pending',
             'pay_status'=>'pending',
             'warehouse_id'=>$request->warehouse_id,
-            'content'=> json_encode($request->content)
+            'content'=> json_encode($request->content),
+            'year' => $year,
+            'month' => $month,
         ]);
 
         return response()->json(
@@ -181,15 +199,11 @@ public function create_order(request $request)
 
       $order->status = $input['status'];
         $order->pay_status = $input['pay_status'];
+        $order->year = Carbon::now()->year;
+        $order->month = Carbon::now()->month;
         $order->save();
 
-        if ($order->status !== 'pending') {
-            $report = new Report;
-            $report->warehouse_id = $order->warehouse_id;
-            $report->pharmacy_id = $order->user_id;
-            $report->order_id = $order->id;
-            $report->save();
-        }
+
 
         $message = "The order has been updated successfully.";
         return response()->json([
@@ -199,6 +213,9 @@ public function create_order(request $request)
         ]);
     }
   }
+
+
+
 
 
   public function edit_order_pharmacy(Request $request,$order_id)
@@ -238,8 +255,29 @@ public function create_order(request $request)
                 'data' => $input,
             ]);
         }
+        $oldContent = json_decode($order->content, true);
+        foreach ($oldContent as $item) {
+            $product = Product::find($item['product_id']);
+            $product->quantity += $item['quantity'];
+            $product->save();
+        }
+
+
+
+        foreach($request->content as $item){
+            $product = Product::find($item['product_id']);
+            if ($item['quantity'] < 0 || $item['quantity'] > $product->quantity) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'error in quantity for product with ID ' . $item['product_id'],
+                ]);
+            }
+        }
+
 
         $order->content = $input['content'];
+        $order->year = Carbon::now()->year;
+        $order->month = Carbon::now()->month;
         $order->save();
 
         foreach ($request->content as $item) {
@@ -256,6 +294,9 @@ public function create_order(request $request)
         ]);
     }
   }
+
+
+
 
   public function delete_order_to_warehouse($id_order)
   {

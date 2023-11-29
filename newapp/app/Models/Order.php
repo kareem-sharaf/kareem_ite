@@ -10,21 +10,19 @@ class Order extends Model
     protected $table = 'orders';
     use HasFactory;
     protected   $fillable=[
-        'status',
-        'pay_status',
-        'user_id',
-        'warehouse_id',
-        'content',
-
-
+        'user_id', 'status', 'pay_status', 'warehouse_id', 'content', 'year', 'month'
     ];
     public function warehouse()
     {
-        return $this->belongsToMany('App/Models/User','warehouse_id');
+        return $this->belongsTo('App/Models/User','warehouse_id');
     }
 
     public function pharmacy()
     {
-        return $this->hasMany('App/Models/Product');
+        return $this->belongsTo('App/Models/Product','user_id');
+    }
+    public function products()
+    {
+        return $this->belongsToMany('App/Models/Product','product_id');
     }
 }

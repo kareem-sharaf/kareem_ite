@@ -23,9 +23,14 @@ class Product extends Model
     {
         return $this->belongsToMany('App/Models/User','warehouse_id');
     }
-   
+
+    public function orders()
+    {
+        return $this->hasMany('App/Models/Order');
+    }
+
     public function favorite()
     {
-        return $this->hasOne('App/Models/Favoite');
+        return $this->hasOne('App/Models/Favorite');
     }
 }

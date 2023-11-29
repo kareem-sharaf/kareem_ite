@@ -55,15 +55,7 @@ Route::get('/show_my_favorites',[App\Http\Controllers\ProductController::class,'
 Route::get('/all_products',[App\Http\Controllers\ProductController::class,'show_all_products']);
 Route::get('/pharmacy/searching/{name}',[App\Http\Controllers\ProductController::class,'search_to_product_for_pharmacy']);
 
-//report controller ???
-Route::get('/show_all_warehouses',[App\Http\Controllers\ReportController::class,'show_all_warehouses']);
 
-
-
-Route::get('/show_all_warehouses',[App\Http\Controllers\ProductController::class,'show_all_warehouses']);
-
-
-Route::post('/show_one_warehouse',[App\Http\Controllers\ProductController::class,'show_one_warehouse']);
 //****************
 
 
@@ -87,4 +79,13 @@ Route::delete('/delete_orders_pharmacy',[App\Http\Controllers\orderController::c
 //Routes for reports.
 Route::middleware('auth:api')->group( function () {
     Route::get('/all_reports_warehouse',[App\Http\Controllers\ReportController::class,'show_all_reports_warehouse']);
+    //report controller ???
+Route::get('/show_all_warehouses',[App\Http\Controllers\ReportController::class,'show_all_warehouses']);
+
+
+
+Route::get('/show_all_warehouses',[App\Http\Controllers\ProductController::class,'show_all_warehouses']);
+
+
+Route::post('/show_one_warehouse',[App\Http\Controllers\ProductController::class,'show_one_warehouse']);
 });
