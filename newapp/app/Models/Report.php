@@ -11,7 +11,7 @@ class Report extends Model
     protected $fillable = [
         'pharmacy_id',
         'warehouse_id',
-        'order_id',
+        'content'
     ];
 
 
@@ -19,10 +19,10 @@ class Report extends Model
 
     public function warehouses()
     {
-        return $this->belongsToMany('App/Models/User','warehouse_id');
+        return $this->belongsTo('App/Models/User','warehouse_id');
     }
     public function pharmacies()
     {
-        return $this->belongsToMany('App/Models/User','pharmacy_id');
+        return $this->belongsTo('App/Models/User','pharmacy_id');
     }
 }

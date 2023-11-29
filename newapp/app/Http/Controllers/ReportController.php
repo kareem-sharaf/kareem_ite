@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Report;
+
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
 use Auth;
@@ -11,57 +14,44 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function show_all_reports_warehouse()
-{
-    $user = auth()->user();
-    $orders = Order::where('warehouse_id', $user->id)
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
-                ->where('status','done')
-                ->get();
+    public function show_all_reports(Request $request)
+    {
+        $user = auth()->user();
+        $validator = Validator::make($request->all(), [
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2000|max:'.date('Y')
+        ]);
 
-    $reportContent = $orders->toJson();
-    $report=Report::create([
-        'name' => $year . '-' . $month,
+        if ($validator->fails())
+            return response()->json([
+                'status' => 0,
+                'message' => 'inputs failed',
+            ]);
+        $month = $request->input('month');
+        $year = $request->input('year');
+        $orders = Order::where('warehouse_id',$user->id)
+                        ->orWhere('user_id', $user->id)
+                        ->where('year',$year)
+                        ->where('month', $month)
+                        ->get();
+        $reportContent = $orders->toJson();
+        if ($user->admin){
+        $report=Report::create([
         'warehouse_id' => $user->id,
-        'content' => $reportContent
-    ]);
+        'content' =>$reportContent
+    ]);}
+    if (!$user->admin){
+        $report=Report::create([
+        'pharmacy_id' => $user->id,
+        'content' =>$reportContent
+    ]);}
     return response()->json(
         [
             'status'=>1,
-            'message'=>'report show successfully',
+            'message'=>'report showing successfully',
             'data'=>$report
         ]
-        );
+    );
 }
-
-public function create_reports()
-{
-
-        $user = Auth::user();
-
-        $doneOrders = Order::where('user_id', $user->id)
-                            ->where('status', 'done')
-                            ->get();
-
-        $reportContent = [];
-        foreach($doneOrders as $order){
-            $reportContent[] = $order->content;
-        }
-
-        $report = new Report;
-        $report->user_id = $user->id;
-        $report->content = json_encode($reportContent);
-        $report->date = now();
-        $report->save();
-
-        return response()->json(
-            [
-                'status'=>1,
-                'message'=>'report created successfully',
-                'data'=>$report
-            ]
-            );
-        }
 
 }

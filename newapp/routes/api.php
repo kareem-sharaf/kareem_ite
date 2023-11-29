@@ -78,14 +78,5 @@ Route::delete('/delete_orders_pharmacy',[App\Http\Controllers\orderController::c
 
 //Routes for reports.
 Route::middleware('auth:api')->group( function () {
-    Route::get('/all_reports_warehouse',[App\Http\Controllers\ReportController::class,'show_all_reports_warehouse']);
-    //report controller ???
-Route::get('/show_all_warehouses',[App\Http\Controllers\ReportController::class,'show_all_warehouses']);
-
-
-
-Route::get('/show_all_warehouses',[App\Http\Controllers\ProductController::class,'show_all_warehouses']);
-
-
-Route::post('/show_one_warehouse',[App\Http\Controllers\ProductController::class,'show_one_warehouse']);
+Route::post('/show_all_reports',[App\Http\Controllers\ReportController::class,'show_all_reports']);
 });
