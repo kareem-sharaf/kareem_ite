@@ -340,5 +340,4 @@ public function show_my_favorites()
 }
 
 
-
 }

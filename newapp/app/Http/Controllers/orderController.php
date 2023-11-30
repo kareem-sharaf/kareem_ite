@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
-
+use App\Notifications\MyNotification;
 use App\Models\User;
 use Validator;
 use Auth;
@@ -17,15 +17,25 @@ class orderController extends Controller
 
 
 
-    public function notification(request $request)
-    {  $user_id=auth()->id();
-    //  dd($user_id);
-      $warehouse_id=$request->warehouse_id;
-      //dd($warehouse_id);
-     // $order_id=$order->id;
-      $the_id=User::where('id',1)->get();
-      dd( is_object($the_id));
-    Notification::send($the_id,new CreateOrder($user_id));
+    public function notification()
+    {  /*$user_id=auth()->user();
+        dd($user_id);
+        if(auth()->user())
+        {
+            return "ss";
+        }*/
+  $user=User::first();
+  $user->notify(new MyNotification());
+ // dd($user);
+ // $user->notify(new CreateOrder());
+  dd($user);
+    //  $warehouse_id=$request->warehouse_id;
+    
+     // $the_id=User::where('id',  1)->get();
+//auth()->user()->notify(new CreateOrder($user));
+    //var_dump($the_id);
+    //Notification::send($the_id,new CreateOrder($user_id));
+    //$the_id->notify(new CreateOrder($user_id));
      
     }
 

@@ -1,24 +1,22 @@
 <?php
 
 namespace App\Notifications;
-use App\User;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CreateOrder extends Notification
+class MyNotification extends Notification
 {
     use Queueable;
-//private $order_id;
-public $user_create;
+
     /**
      * Create a new notification instance.
      */
     public function __construct()
     {
-      //  $this->order_id=$order_id;
-       // $this->user_create=$user_create;
+        //
     }
 
     /**
@@ -26,27 +24,32 @@ public $user_create;
      *
      * @return array<int, string>
      */
-    public function via( $notifiable): array
+    public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['mail','database', 'nexmo'];
     }
 
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
+    }
 
     /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
-    public function toArray( $notifiable): array
+    public function toArray(object $notifiable): array
     {
         return [
             'message' => 'Your account was approved!',
             'action_url' => url('/')
-      
         ];
-       /* return [
-           // 'order_id'=>$this->order_id,
-            'user_create'=>$this->user_create,
-        ];*/
     }
 }

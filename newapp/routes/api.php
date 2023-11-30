@@ -29,8 +29,14 @@ Route::get('/logout',[App\Http\Controllers\authController::class,'logout']);
 Route::post('/reset_password',[App\Http\Controllers\authController::class,'reset_password']);
 Route::post('/edit_information',[App\Http\Controllers\authController::class,'edit_info']);
 Route::delete('/delete_user',[App\Http\Controllers\authController::class,'delete_the_user']);
+
+
+Route::get('/notification',[App\Http\Controllers\orderController::class,'notification']);
+
 });
 //*********
+
+
 
 
 
@@ -77,6 +83,11 @@ Route::get('/search_pharmacy',[App\Http\Controllers\orderController::class,'sear
 Route::post('/create_order',[App\Http\Controllers\orderController::class,'create_order']);
 Route::post('/edit_orders_warehouse/{id}',[App\Http\Controllers\orderController::class,'edit_order_warehouse']);
 Route::post('/edit_orders_pharmacy/{id}',[App\Http\Controllers\orderController::class,'edit_order_pharmacy']);
+
+
+
+
+
 Route::delete('/delete_orders_warehouse',[App\Http\Controllers\orderController::class,'delete_order_to_warehouse']);
 Route::delete('/delete_orders_pharmacy',[App\Http\Controllers\orderController::class,'delete_order_to_pharmacy']);
 });
