@@ -93,11 +93,11 @@ class ProductController extends Controller
 
 
         $user = Auth::user();
-        $input['warehouse_id'] = $user->id;  
+        $input['warehouse_id'] = $user->id;
           $warehouse_name=User::where('id',$user->id)->get('name')->first();
         $input['warehouse_name'] =  $warehouse_name->name;
-    
-   
+
+
         $product = Product::create($input);
         $message="add product successfully";
 
@@ -170,7 +170,7 @@ public function search_to_product_for_pharmacy($name)
     ]);
 }
 
-//all warehouses 
+//all warehouses
 public function show_all_warehouses()
 {
         $warehouse = User::where('admin', true)->get('name');
@@ -183,7 +183,6 @@ public function show_all_warehouses()
         ]);
     }
 
-//sdf
 
 //all prod in my warehouse
     public function show_one_warehouse(request $request)
@@ -281,7 +280,7 @@ public function add_or_delete_from_favorites(request $request)
 {
     $pharmacy_id=auth()->id();
     $warehouse_id=Product::where('id',$request->id)->get('warehouse_id')->first();
-    $warehouse_id=$warehouse_id->warehouse_id; 
+    $warehouse_id=$warehouse_id->warehouse_id;
 
 $favorite=Favorite::where('product_id',$request->id)
 ->where('pharmacy_id',$pharmacy_id)
@@ -297,7 +296,7 @@ if($favorite==null)
 
     $warehouse_name=User::where('id',$warehouse_id)->get('name')->first();
 
-    Favorite::create([  
+    Favorite::create([
         'product_id'=> $request->id,
         'product_name'=>$product_name->name_scientific ,
 
@@ -319,7 +318,7 @@ else
 {
 
   $favorite=Favorite::where('product_id',$request->id)->where('pharmacy_id',$pharmacy_id)->where('warehouse_id', $warehouse_id);
-   
+
     $favorite->delete();
 
 return response()->json([
@@ -333,7 +332,7 @@ return response()->json([
 
 public function show_my_favorites()
 {
-   
+
 
     $pharmacy_id=auth()->id();
 

@@ -30,12 +30,15 @@ class orderController extends Controller
 
     }
 //REPLACE ID WITH NAME
+//and date
     public function show_all_orders_to_warehouse()
     {
         $user = auth()->user();
         $id = $user->id;
 
-        $order = Order::where('warehouse_id', $id)->get('pramacy_name');
+        $order = Order::where('warehouse_id', $id)
+        ->select('pharmacy_name', 'year', 'month')
+        ->get();
         $message = "this is the all orders";
 
         return response()->json([
@@ -46,12 +49,15 @@ class orderController extends Controller
     }
 
 //REPLACE ID WITH NAME
+//and date
     public function show_all_orders_to_pharmacy()
     {
         $user = auth()->user();
         $id = $user->id;
 
-        $order = Order::where('user_id', $id)->get('warehouse_name');
+        $order = Order::where('user_id', $id)
+        ->select('warehouse_name', 'year', 'month')
+        ->get();
         $message = "this is the all orders";
 
         return response()->json([
@@ -68,7 +74,7 @@ class orderController extends Controller
     $id = $user->id;
     $order = Order::where('warehouse_id', $id)
                         ->where('id', $order_id)
-                        ->get(['pramacy_name']);
+                        ->get();
 
     if (is_null($order)) {
         $message = "The order doesn't exist.";
@@ -92,7 +98,7 @@ public function search_to_order_for_pharmacy($order_id)
     $id = $user->id;
     $order = Order::where('user_id', $id)
                         ->where('id', $order_id)
-                        ->get(['warehouse_name']);
+                        ->get();
 
     if (is_null($order)) {
         $message = "The order doesn't exist.";
@@ -117,14 +123,25 @@ public function create_order(request $request)
     $id = $user->id;
     if(!$user->admin){
         $request->validate([
+            'warehouse_id'=>'required',
             'content'=>'required|array',
             'content.*.product_id'=>'required|integer',
+            'content.*.name_scientific'=>'required|string',
             'content.*.quantity'=>'required|integer|min:1'
         ],
         ['content.required'=>'there is no content in the order']);
-
-        foreach($request->content as $item){
-            $product = Product::find($item['product_id']);
+        $warehouse_id = $request->warehouse_id;
+        $content = $request->content;
+        foreach($content as $item){
+            $product = Product::where('warehouse_id', $warehouse_id)
+                    ->where('id', $item['product_id'])
+                    ->first();
+                    if (!$product) {
+                        return response()->json([
+                            'status' => 0,
+                            'message' => 'Product with ID ' . $item['product_id'] . ' not found in warehouse'
+                        ]);
+                    }
             if ($item['quantity'] < 0) {
                 return response()->json([
                     'status' => 0,
@@ -154,8 +171,7 @@ public function create_order(request $request)
             'status'=>'pending',
             'pay_status'=>'pending',
             'warehouse_id'=>$request->warehouse_id,
-
-             'warehouse_name'=> $warehouse_name->name,
+            'warehouse_name'=> $warehouse_name->name,
             'content'=> json_encode($request->content),
             'year' => $year,
             'month' => $month,

@@ -64,8 +64,8 @@ Route::get('/pharmacy/searching/{name}',[App\Http\Controllers\ProductController:
 Route::middleware('auth:api')->group( function () {
 Route::get('/all_orders_warehouse',[App\Http\Controllers\orderController::class,'show_all_orders_to_warehouse']);
 Route::get('/all_orders_pharmacy',[App\Http\Controllers\orderController::class,'show_all_orders_to_pharmacy']);
-Route::get('/search_warehouse',[App\Http\Controllers\orderController::class,'search_to_order_for_warehouse']);
-Route::get('/search_pharmacy',[App\Http\Controllers\orderController::class,'search_to_order_for_pharmacy']);
+Route::get('/search_warehouse/{id}',[App\Http\Controllers\orderController::class,'search_to_order_for_warehouse']);
+Route::get('/search_pharmacy/{id}',[App\Http\Controllers\orderController::class,'search_to_order_for_pharmacy']);
 Route::post('/create_order',[App\Http\Controllers\orderController::class,'create_order']);
 Route::post('/edit_orders_warehouse/{id}',[App\Http\Controllers\orderController::class,'edit_order_warehouse']);
 Route::post('/edit_orders_pharmacy/{id}',[App\Http\Controllers\orderController::class,'edit_order_pharmacy']);
