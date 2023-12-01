@@ -15,6 +15,8 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('pharmacy_id')->unsigned()->nullable();
             $table->integer('warehouse_id')->unsigned()->nullable();
+            $table->string('pharmacy_name')->nullable();
+            $table->string('warehouse_name')->nullable();
             $table->json('content');
             $table->timestamps();
 

@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
+            $table->string('pharmacy_name');
             $table->integer('warehouse_id')->unsigned();
+            $table->string('warehouse_name');
             $table->string('status');
             $table->string('pay_status');
             $table->json('content');

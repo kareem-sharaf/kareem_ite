@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    //FIX THE VALIDATE ERROR MESSAGE
+    //REPLACE ID WITH NAME
     public function show_all_reports(Request $request)
     {
         $user = auth()->user();
@@ -36,13 +38,17 @@ class ReportController extends Controller
                         ->get();
         $reportContent = $orders->toJson();
         if ($user->admin){
+            $warehouse_name=User::where('id',$user->id)->get('name')->first();
         $report=Report::create([
         'warehouse_id' => $user->id,
+        'warehouse_name' => $warehouse_name->name,
         'content' =>$reportContent
     ]);}
     if (!$user->admin){
+        $pharmacy_name=User::where('id',$user->id)->get('name')->first();
         $report=Report::create([
         'pharmacy_id' => $user->id,
+        'pharmacy_name' => $pharmacy_name->name,
         'content' =>$reportContent
     ]);}
     return response()->json(

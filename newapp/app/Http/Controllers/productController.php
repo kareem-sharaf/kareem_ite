@@ -41,7 +41,7 @@ class ProductController extends Controller
     }
 
 
-
+//REPLACE ID WITH NAME OR EDIT THE DATA IN MODEL AFTER UPDATING THE CODE
     public function create_products(Request $request)
     {
         $user = auth()->user();
@@ -93,7 +93,11 @@ class ProductController extends Controller
 
 
         $user = Auth::user();
-        $input['warehouse_id'] = $user->id;
+        $input['warehouse_id'] = $user->id;  
+          $warehouse_name=User::where('id',$user->id)->get('name')->first();
+        $input['warehouse_name'] =  $warehouse_name->name;
+    
+   
         $product = Product::create($input);
         $message="add product successfully";
 
@@ -271,30 +275,44 @@ public function show_all_warehouses()
     ]);
 
     }
-
+//REPLACE ID WITH NAME
+//MAKE IT MORE CLEAN
 public function add_or_delete_from_favorites(request $request)
 {
     $pharmacy_id=auth()->id();
     $warehouse_id=Product::where('id',$request->id)->get('warehouse_id')->first();
     $warehouse_id=$warehouse_id->warehouse_id; 
 
-$favorite=Favorite::where('product_id',$request->id)->where('pharmacy_id',$pharmacy_id)->where('warehouse_id', $warehouse_id)->get()->first();
+$favorite=Favorite::where('product_id',$request->id)
+->where('pharmacy_id',$pharmacy_id)
+->where('warehouse_id', $warehouse_id)
+->get()->first();
 
-
+$data=Product::where('id',$request->id)->get('name_scientific')->first();
 if($favorite==null)
 {
+     $product_name=Product::where('id',$request->id)->get('name_scientific')->first();
+
+    $pharmacy_name=User::where('id',$pharmacy_id)->get('name')->first();
+
+    $warehouse_name=User::where('id',$warehouse_id)->get('name')->first();
+
     Favorite::create([  
         'product_id'=> $request->id,
+        'product_name'=>$product_name->name_scientific ,
+
         'pharmacy_id'=> $pharmacy_id,
+        'pharmacy_name'=> $pharmacy_name->name,
+
         'warehouse_id'=> $warehouse_id,
-      
+        'warehouse_name'=> $warehouse_name->name,
 
     ]);
 
 return response()->json([
     'status'=>1,
     'message'=>'product added to favorite list succsussfully',
-    'data'=>[]
+    'data'=>$data
 ]);
 }
 else
@@ -307,7 +325,7 @@ else
 return response()->json([
     'status'=>1,
     'message'=>'product deleted from favorite list succsussfully',
-    'data'=>[]
+    'data'=>$data
 ]);
 }
 }
@@ -315,9 +333,12 @@ return response()->json([
 
 public function show_my_favorites()
 {
+   
 
     $pharmacy_id=auth()->id();
 
+// $favorite=Favorite::where('pharmacy_id', $pharmacy_id)->get('pharmacy_name')->first();
+// dd($favorite);
     $favorite=Favorite::where('pharmacy_id', $pharmacy_id)->get()->first();
 
     if($favorite==null)

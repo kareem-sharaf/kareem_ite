@@ -18,6 +18,7 @@ class Product extends Model
         'ex_date',
         'price',
         'warehouse_id',
+        'warehouse_name'
     ];
     public function warehouse()
     {
