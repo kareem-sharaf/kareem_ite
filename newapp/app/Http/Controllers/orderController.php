@@ -29,13 +29,13 @@ class orderController extends Controller
     Notification::send($the_id,new CreateOrder($user_id));
 
     }
-
+//REPLACE ID WITH NAME
     public function show_all_orders_to_warehouse()
     {
         $user = auth()->user();
         $id = $user->id;
 
-        $order = Order::where('warehouse_id', $id)->get('user_id');
+        $order = Order::where('warehouse_id', $id)->get('pramacy_name');
         $message = "this is the all orders";
 
         return response()->json([
@@ -45,13 +45,13 @@ class orderController extends Controller
         ]);
     }
 
-
+//REPLACE ID WITH NAME
     public function show_all_orders_to_pharmacy()
     {
         $user = auth()->user();
         $id = $user->id;
 
-        $order = Order::where('user_id', $id)->get('warehouse_id');
+        $order = Order::where('user_id', $id)->get('warehouse_name');
         $message = "this is the all orders";
 
         return response()->json([
@@ -61,14 +61,14 @@ class orderController extends Controller
         ]);
     }
 
-
+//REPLACE ID WITH NAME
     public function search_to_order_for_warehouse($order_id)
 {
     $user = auth()->user();
     $id = $user->id;
     $order = Order::where('warehouse_id', $id)
                         ->where('id', $order_id)
-                        ->get(['user_id']);
+                        ->get(['pramacy_name']);
 
     if (is_null($order)) {
         $message = "The order doesn't exist.";
@@ -85,14 +85,14 @@ class orderController extends Controller
         'data' => $order,
     ]);
 }
-
+//REPLACE ID WITH NAME
 public function search_to_order_for_pharmacy($order_id)
 {
     $user = auth()->user();
     $id = $user->id;
     $order = Order::where('user_id', $id)
                         ->where('id', $order_id)
-                        ->get(['warehouse_id']);
+                        ->get(['warehouse_name']);
 
     if (is_null($order)) {
         $message = "The order doesn't exist.";
@@ -110,7 +110,7 @@ public function search_to_order_for_pharmacy($order_id)
     ]);
 }
 
-
+//REPLACE ID WITH NAME
 public function create_order(request $request)
   {
     $user = auth()->user();
@@ -149,9 +149,12 @@ public function create_order(request $request)
 
         Order::create([
             'user_id'=>$id,
+            'pharmacy_name'=>User::where('id',$id)->get('name')->first(),
             'status'=>'pending',
             'pay_status'=>'pending',
             'warehouse_id'=>$request->warehouse_id,
+
+             'warehouse_name'=>User::where('id',$request->warehouse_id)->get('name')->first(),
             'content'=> json_encode($request->content),
             'year' => $year,
             'month' => $month,
@@ -297,7 +300,7 @@ public function create_order(request $request)
 
 
 
-
+//ARRAY SHOULD BE EMPTY, ADDING DATA TO RESPONSE
   public function delete_order_to_warehouse($id_order)
   {
       $user = auth()->user();
@@ -308,6 +311,7 @@ public function create_order(request $request)
           return response()->json([
               'status' => 0,
               'message' => $message,
+              'data' => [],
           ]);
       }
       $order->delete();
@@ -322,6 +326,7 @@ public function create_order(request $request)
 
 
 
+//ARRAY SHOULD BE EMPTY, ADDING DATA TO RESPONSE
   public function delete_order_to_pharmacy($id_order)
   {
       $user = auth()->user();
@@ -332,6 +337,7 @@ public function create_order(request $request)
           return response()->json([
               'status' => 0,
               'message' => $message,
+              'data' => [],
           ]);
       }
       if ($order->status == 'pending') {
@@ -347,6 +353,7 @@ public function create_order(request $request)
         return response()->json([
        'status' => 1,
        'message' => $message,
+       'data' => [],
    ]);
       }
   }

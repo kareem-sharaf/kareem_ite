@@ -12,8 +12,13 @@ class Favorite extends Model
     
     
     'pharmacy_id',
+    'pharmacy_name',
+
     'warehouse_id',
+    'warehouse_name',
+
     'product_id',
+    'product_name'
 ];
     use HasFactory;
 

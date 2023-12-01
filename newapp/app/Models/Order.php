@@ -10,7 +10,7 @@ class Order extends Model
     protected $table = 'orders';
     use HasFactory;
     protected   $fillable=[
-        'user_id', 'status', 'pay_status', 'warehouse_id', 'content', 'year', 'month'
+        'user_id', 'status', 'pay_status', 'warehouse_id', 'content', 'year', 'month','warehouse_name','user_name'
     ];
     public function warehouse()
     {

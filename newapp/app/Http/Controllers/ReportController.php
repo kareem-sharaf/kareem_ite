@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    //FIX THE VALIDATE ERROR MESSAGE
+    //REPLACE ID WITH NAME
     public function show_all_reports(Request $request)
     {
         $user = auth()->user();

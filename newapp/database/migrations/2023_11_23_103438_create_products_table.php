@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('ex_date');
             $table->integer('price');
             $table->integer('warehouse_id')->unsigned();
+            $table->string('warehouse_name');
             $table->timestamps();
 
             $table->foreign('warehouse_id')->references('id')->on('users')->onDelete('cascade');

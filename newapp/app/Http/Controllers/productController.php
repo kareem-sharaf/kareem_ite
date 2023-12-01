@@ -41,7 +41,7 @@ class ProductController extends Controller
     }
 
 
-
+//REPLACE ID WITH NAME OR EDIT THE DATA IN MODEL AFTER UPDATING THE CODE
     public function create_products(Request $request)
     {
         $user = auth()->user();
@@ -94,6 +94,7 @@ class ProductController extends Controller
 
         $user = Auth::user();
         $input['warehouse_id'] = $user->id;
+        $input['warehouse_name'] = User::where('id',$user->id)->get('name')->first();
         $product = Product::create($input);
         $message="add product successfully";
 
@@ -271,7 +272,8 @@ public function show_all_warehouses()
     ]);
 
     }
-
+//REPLACE ID WITH NAME
+//MAKE IT MORE CLEAN
 public function add_or_delete_from_favorites(request $request)
 {
     $pharmacy_id=auth()->id();
@@ -285,9 +287,13 @@ if($favorite==null)
 {
     Favorite::create([  
         'product_id'=> $request->id,
+        'product_name'=> Product::where('id',$request->id)->get('name_scientific')->first(),
+
         'pharmacy_id'=> $pharmacy_id,
+        'pharmacy_name'=> User::where('id',$pharmacy_id)->get('name')->first(),
+
         'warehouse_id'=> $warehouse_id,
-      
+        'warehouse_name'=> User::where('id',$warehouse_id)->get('name')->first(),
 
     ]);
 

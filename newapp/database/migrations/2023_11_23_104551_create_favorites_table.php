@@ -14,8 +14,13 @@ return new class extends Migration
         Schema::create('favorites', function (Blueprint $table) {
         $table->increments('id');
         $table->Integer('product_id')->unsigned()->nullable();
+        $table->string('product_name');
+
         $table->Integer('pharmacy_id')->unsigned()->nullable();
+        $table->string('pharmacy_name');
+        
         $table->Integer('warehouse_id')->unsigned()->nullable();
+        $table->string('warehouse_name');
         $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
