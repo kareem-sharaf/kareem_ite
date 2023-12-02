@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Product;
 use Carbon\Carbon;
+use App\Console\Kernel;
 
 class Ex_date extends Command
 {

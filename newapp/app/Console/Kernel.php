@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
+use App\Console\Commands\Ex_date;
 
 class Kernel extends ConsoleKernel
 {
@@ -12,13 +14,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-
         $schedule->command('ex_date')->everyMinute();
-
     }
 
     /**
      * Register the commands for the application.
+     *
+     * @return void
      */
     protected function commands(): void
     {
@@ -26,4 +28,6 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+
 }
