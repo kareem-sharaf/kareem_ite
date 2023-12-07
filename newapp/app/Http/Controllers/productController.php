@@ -61,7 +61,7 @@ class ProductController extends Controller
             $message="there is wrong in inputs.";
             return response()->json(
                 [
-                    'status'=>0,
+                    'status'=>false,
                     'message'=>$message,
                     'data'=>$input,
                 ]
@@ -84,7 +84,7 @@ class ProductController extends Controller
             $existingProduct->save();
             $message = "update product quantity successfully";
             return response()->json([
-                'status' => 1,
+                'status' => true,
                 'message' => $message,
                 'data' => $existingProduct
             ]);
@@ -105,7 +105,7 @@ class ProductController extends Controller
 
         return response()->json(
             [
-                'status'=>1,
+                'status'=>true,
                 'message'=>$message,
                 'data'=>$product
             ]
@@ -115,7 +115,7 @@ class ProductController extends Controller
         $message="you can't add products ";
         return response()->json(
             [
-                'status'=>0,
+                'status'=>false,
                 'message'=>$message
             ]
         );
