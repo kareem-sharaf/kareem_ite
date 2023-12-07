@@ -19,35 +19,37 @@ class authController extends Controller
 
    public function register_warehouse(Request $request)
    {
-    $request->validate([
-        'name'=>'required',
-        'email'=>'required|min:10|unique:users,email',
-        'password'=>'required|min:8',
-        'number'=>'required|min:10|unique:users,number',
-    ]
-    ,['name.required'=>'name is required'],
-        ['email.required'=>'email is required'],
-        ['email.unique'=>'email already taken'],
-       [ 'password.required'=>'password is required'],
-       ['number.required'=>'number is required'],
-       ['number.unique'=>'number already taken'],
-);
-    $input = $request->all();
+    try {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:users,name',
+            'email' => 'required|min:10|unique:users,email',
+            'password' => 'required|min:8',
+            'number' => 'required|digits:10|unique:users,number',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        } else {
+            $input = $request->all();
     $input['password'] = Hash::make($input['password']);
     $input['admin'] = true;
     $user = User::create($input);
     $success['token'] = $user->createToken('kareem')->accessToken;
     $success['name'] = $user->name;
 
-
-       $message="Registration completed";
-        return response()->json(
-            [
-                'status'=>1,
-                'message'=>$message,
-                'data'=>$success,
-            ]
-        );
+    $message = "Registration completed";
+    return response()->json([
+        'status' => true,
+        'message' => $message,
+        'data' => $success,
+    ]);
+        }
+    } catch (\Throwable $th) {
+        return "An error occurred";
+    }
    }
 
 
