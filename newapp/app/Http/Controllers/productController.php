@@ -48,53 +48,57 @@ class ProductController extends Controller
         $id = $user->id;
         if($user->admin){
         $input = $request->all();
-        $validator = Validator::make($input,[
+      //  try {
+        $request->validate([
             'name_scientific'=>'required',
             'name_trade'=>'required',
             'type'=>'required',
             'company'=>'required',
             'quantity'=>'required|integer|min:1',
-            'ex_date'=>'required',
+            'ex_date'=>'required|date|dateformat:Y/m/d',
             'price'=>'required'
+        ],
+        [
+            'name_scientific.required' => 'name scientific is required',
+            'name_trade.required'=> 'name trade is required',
+            'type.required'=> 'type is required',
+            'company.required'=> 'company is required',
+            'quantity.required'=> 'quantity is required',
+            'quantity.min'=> 'quantity must be 1 at least',
+            'ex_date.required'=> 'ex_date is required',
+            'ex_date.date'=> 'ex_date must be like that 0000/00/00',
+            'ex_date.dateformat' => 'ex_date must be like that 0000/00/00',
+            'price.required'=> 'price is required',
         ]);
-        if ($validator->fails()) {
-            $message="there is wrong in inputs.";
-            return response()->json(
-                [
-                    'status'=>false,
-                    'message'=>$message,
-                    'data'=>$input,
-                ]
-            );
-        }
 
-    //اذا كان المنتج موجود سابقا فقط عدل الكمية
 
-        $existingProduct = Product::where('warehouse_id', $id)
-                            ->where('name_scientific', $input['name_scientific'])
-                            ->where('name_trade', $input['name_trade'])
-                            ->where('type', $input['type'])
-                            ->where('company', $input['company'])
-                            ->where('ex_date', $input['ex_date'])
-                            ->where('price', $input['price'])
-                            ->first();
+            //اذا كان المنتج موجود سابقا فقط عدل الكمية
+
+                $existingProduct = Product::where('warehouse_id', $id)
+                ->where('name_scientific', $input['name_scientific'])
+                ->where('name_trade', $input['name_trade'])
+                ->where('type', $input['type'])
+                ->where('company', $input['company'])
+                ->where('ex_date', $input['ex_date'])
+                ->where('price', $input['price'])
+                ->first();
 
         if ($existingProduct) {
-            $existingProduct->quantity += $input['quantity'];
-            $existingProduct->save();
-            $message = "update product quantity successfully";
-            return response()->json([
-                'status' => true,
-                'message' => $message,
-                'data' => $existingProduct
-            ]);
+        $existingProduct->quantity += $input['quantity'];
+        $existingProduct->save();
+        $message = "update product quantity successfully";
+        return response()->json([
+        'status' => true,
+        'message' => $message,
+        'data' => $existingProduct
+        ]);
         }
-//اذا لم يكن المنتج موجود اضف منتجا جديدا
+        //اذا لم يكن المنتج موجود اضف منتجا جديدا
 
 
         $user = Auth::user();
         $input['warehouse_id'] = $user->id;
-          $warehouse_name=User::where('id',$user->id)->get('name')->first();
+        $warehouse_name=User::where('id',$user->id)->get('name')->first();
         $input['warehouse_name'] =  $warehouse_name->name;
 
 
@@ -104,14 +108,25 @@ class ProductController extends Controller
 
 
         return response()->json(
-            [
-                'status'=>true,
-                'message'=>$message,
-                'data'=>$product
-            ]
+        [
+        'status'=>true,
+        'message'=>$message,
+        'data'=>$product
+        ]
         );
+            }
+      /*  } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred'
+            ]);
+        }*/
 
-    }else{
+
+
+
+
+    else{
         $message="you can't add products ";
         return response()->json(
             [

@@ -19,21 +19,27 @@ class authController extends Controller
 
    public function register_warehouse(Request $request)
    {
-    try {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:users,name',
-            'email' => 'required|min:10|unique:users,email',
-            'password' => 'required|min:8',
-            'number' => 'required|digits:10|unique:users,number',
-        ]);
+    //try {
+        $request->validate([
+            'name'=>'required',
+            'email'=>'required|min:10|unique:users,email',
+            'password'=>'required|min:8',
+            'number'=>'required|digits:10|unique:users,number',
+        ]
+        ,['name.required'=>'name is required'],
+            ['email.required'=>'email is required'],
+            ['email.unique'=>'email already taken'],
+            [ 'email.min'=>'email must be 10 characters at least'],
+           [ 'password.required'=>'password is required'],
+           [ 'password.min'=>'password must be 8 characters at least'],
+           ['number.required'=>'number is required'],
+           ['number.unique'=>'number already taken'],
+           ['number.digits'=>'number must be 10 characters.'],
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()
-            ]);
-        } else {
-            $input = $request->all();
+    );
+
+
+    $input = $request->all();
     $input['password'] = Hash::make($input['password']);
     $input['admin'] = true;
     $user = User::create($input);
@@ -42,14 +48,14 @@ class authController extends Controller
 
     $message = "Registration completed";
     return response()->json([
-        'status' => true,
+        'status' => "200",
         'message' => $message,
         'data' => $success,
     ]);
-        }
-    } catch (\Throwable $th) {
+
+  /*  } catch (\Throwable $th) {
         return "An error occurred";
-    }
+    }*/
    }
 
 
