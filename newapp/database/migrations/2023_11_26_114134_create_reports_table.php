@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('warehouse_name')->nullable();
             $table->json('content');
             $table->timestamps();
-
             $table->foreign('pharmacy_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('warehouse_id')->references('id')->on('users')->onDelete('cascade');
 

@@ -31,13 +31,13 @@ class orderController extends Controller
     }
 //REPLACE ID WITH NAME
 //and date
-    public function show_all_orders_to_warehouse()
+    public function show_all_orders_to_warehouse()//done
     {
         $user = auth()->user();
         $id = $user->id;
 
         $order = Order::where('warehouse_id', $id)
-        ->select('pharmacy_name', 'year', 'month')
+        ->select('id','pharmacy_name', 'year', 'month','status','pay_status')
         ->get();
         $message = "this is the all orders";
 
@@ -68,7 +68,7 @@ class orderController extends Controller
     }
 
 //REPLACE ID WITH NAME
-    public function search_to_order_for_warehouse($order_id)
+    public function show_one_order_to_warehouse($order_id)//done
 {
     $user = auth()->user();
     $id = $user->id;
@@ -187,7 +187,7 @@ public function create_order(request $request)
     }
 
 
-  public function edit_order_warehouse(Request $request,$order_id)
+  public function edit_order_warehouse(Request $request,$order_id)//done
   {
 
     $user = auth()->user();
@@ -217,10 +217,27 @@ public function create_order(request $request)
             ]);
         }
 
-      $order->status = $input['status'];
+        $order->status = $input['status'];
         $order->pay_status = $input['pay_status'];
         $order->year = Carbon::now()->year;
         $order->month = Carbon::now()->month;
+
+        $content = [
+            'pharmacy_name' => $order->pharmacy_name,
+            'warehouse_name' => $user->name,
+            'year' => Carbon::now()->year,
+            'month' => Carbon::now()->month
+        ];
+        if ($order->status === 'done' && $order->pay_status === 'done') {
+            $report = new Report();
+            $report->pharmacy_id = $order->user_id;
+            $report->warehouse_id = $id;
+            $report->pharmacy_name = $order->pharmacy_name;
+            $report->warehouse_name = $user->name;
+            $report->content = json_encode($content);
+            $report->save();
+        }
+
         $order->save();
 
 
@@ -318,7 +335,7 @@ public function create_order(request $request)
 
 
 //ARRAY SHOULD BE EMPTY, ADDING DATA TO RESPONSE
-  public function delete_order_to_warehouse($id_order)
+  public function delete_order_to_warehouse($id_order)//done
   {
       $user = auth()->user();
       $id = $user->id;

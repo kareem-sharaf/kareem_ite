@@ -38,7 +38,7 @@ class ReportController extends Controller
                         ->get();
         $reportContent = $orders->toJson();
         if ($user->admin){
-            $warehouse_name=User::where('id',$user->id)->get('name')->first();
+        $warehouse_name=User::where('id',$user->id)->get('name')->first();
         $report=Report::create([
         'warehouse_id' => $user->id,
         'warehouse_name' => $warehouse_name->name,

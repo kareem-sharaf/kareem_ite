@@ -11,30 +11,41 @@ use App\Models\User;
 class ProductController extends Controller
 {
 
-    public function show_all_products_to_warehouse()
+public function show_all_products_to_warehouse()//done
 {
     $user = auth()->user();
     $id = $user->id;
 
-    $product = Product::where('warehouse_id', $id)->get('name_scientific');
+    $product = Product::where('warehouse_id', $id)->get();
     $message = "this is the all products";
 
     return response()->json([
-        'status' => 1,
+        'status' => '200',
+        'message' => $message,
+        'data' => $product,
+    ]);
+}
+
+public function show_one_product_to_warehouse($id)//done
+{
+    $product = Product::where('id', $id)->get();
+    $message = "this is the product";
+
+    return response()->json([
+        'status' => '200',
         'message' => $message,
         'data' => $product,
     ]);
 }
 
 
-
-        public function show_all_products()
+public function show_all_products()//done
     {
         $product = Product::get('name_scientific');
         $message = "this is the all products";
 
         return response()->json([
-            'status' => 1,
+            'status' => '200',
             'message' => $message,
             'data' => $product,
         ]);
@@ -42,20 +53,19 @@ class ProductController extends Controller
 
 
 //REPLACE ID WITH NAME OR EDIT THE DATA IN MODEL AFTER UPDATING THE CODE
-    public function create_products(Request $request)
+    public function create_products(Request $request)//done
     {
         $user = auth()->user();
         $id = $user->id;
         if($user->admin){
         $input = $request->all();
-      //  try {
         $request->validate([
             'name_scientific'=>'required',
             'name_trade'=>'required',
             'type'=>'required',
             'company'=>'required',
             'quantity'=>'required|integer|min:1',
-            'ex_date'=>'required|date|dateformat:Y/m/d',
+            'ex_date'=>'required',
             'price'=>'required'
         ],
         [
@@ -66,8 +76,6 @@ class ProductController extends Controller
             'quantity.required'=> 'quantity is required',
             'quantity.min'=> 'quantity must be 1 at least',
             'ex_date.required'=> 'ex_date is required',
-            'ex_date.date'=> 'ex_date must be like that 0000/00/00',
-            'ex_date.dateformat' => 'ex_date must be like that 0000/00/00',
             'price.required'=> 'price is required',
         ]);
 
@@ -88,7 +96,7 @@ class ProductController extends Controller
         $existingProduct->save();
         $message = "update product quantity successfully";
         return response()->json([
-        'status' => true,
+        'status' => '200',
         'message' => $message,
         'data' => $existingProduct
         ]);
@@ -100,8 +108,6 @@ class ProductController extends Controller
         $input['warehouse_id'] = $user->id;
         $warehouse_name=User::where('id',$user->id)->get('name')->first();
         $input['warehouse_name'] =  $warehouse_name->name;
-
-
         $product = Product::create($input);
         $message="add product successfully";
 
@@ -109,18 +115,13 @@ class ProductController extends Controller
 
         return response()->json(
         [
-        'status'=>true,
+        'status'=>'200',
         'message'=>$message,
         'data'=>$product
         ]
         );
             }
-      /*  } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => 'An error occurred'
-            ]);
-        }*/
+
 
 
 
@@ -130,7 +131,7 @@ class ProductController extends Controller
         $message="you can't add products ";
         return response()->json(
             [
-                'status'=>false,
+                'status'=>'500',
                 'message'=>$message
             ]
         );
@@ -138,14 +139,16 @@ class ProductController extends Controller
 }
 
 
-    public function search_to_product_for_warehouse($name)
+    public function search_to_product_for_warehouse($name)//done
 {
     $user = auth()->user();
     $id = $user->id;
-    $product = Product::where('warehouse_id', $id)
-                        ->where('name_scientific', $name)
-                        ->orwhere('type', $name)
-                        ->get(['name_scientific', 'type']);
+    $product = Product::where('warehouse_id', $user->id)
+                ->where(function($query) use ($name) {
+                    $query->where('name_scientific', $name)
+                          ->orWhere('type', $name);
+                })
+                ->get();
 
     if (is_null($product)) {
         $message = "The product doesn't exist.";
@@ -163,11 +166,11 @@ class ProductController extends Controller
     ]);
 }
 
-public function search_to_product_for_pharmacy($name)
+public function search_to_product_for_pharmacy($name)//done
 {
     $product = Product::where('name_scientific', $name)
                         ->orwhere('type', $name)
-                        ->get(['name_scientific', 'type']);
+                        ->get(['name_scientific', 'type','warehouse_name']);
 
     if (is_null($product)) {
         $message = "The product doesn't exist.";
@@ -186,9 +189,9 @@ public function search_to_product_for_pharmacy($name)
 }
 
 //all warehouses
-public function show_all_warehouses()
+public function show_all_warehouses()//done
 {
-        $warehouse = User::where('admin', true)->get('name');
+        $warehouse = User::where('admin', true)->select('id', 'name')->get();
         $message = "this is the all warehouses";
 
         return response()->json([
@@ -199,11 +202,11 @@ public function show_all_warehouses()
     }
 
 
-//all prod in my warehouse
-    public function show_one_warehouse(request $request)
+//all products in my warehouse
+    public function show_products_in_warehouse($id)//done
     {
 
-        $product = Product::where('warehouse_id',$request->id)->get('name_scientific');
+        $product = Product::where('warehouse_id',$id)->get();
         $message = "this is the all products";
         return response()->json([
             'status' => 1,
@@ -215,7 +218,7 @@ public function show_all_warehouses()
 
 
 
-    public function edit_product(Request $request,$product_id)
+    public function edit_product(Request $request,$product_id)//done
 {
         $user = auth()->user();
         $id = $user->id;
@@ -267,7 +270,7 @@ public function show_all_warehouses()
 
 
 
-    public function delete_product($id_product)
+    public function delete_product($id_product)//done
     {
         //delete the products which the warehouse want deleted it.
         $user = auth()->user();

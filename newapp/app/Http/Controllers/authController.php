@@ -19,7 +19,6 @@ class authController extends Controller
 
    public function register_warehouse(Request $request)
    {
-    //try {
         $request->validate([
             'name'=>'required',
             'email'=>'required|min:10|unique:users,email',
@@ -53,9 +52,6 @@ class authController extends Controller
         'data' => $success,
     ]);
 
-  /*  } catch (\Throwable $th) {
-        return "An error occurred";
-    }*/
    }
 
 
@@ -66,31 +62,33 @@ class authController extends Controller
         'name'=>'required',
         'email'=>'required|min:10|unique:users,email',
         'password'=>'required|min:8',
-        'number'=>'required|min:10|unique:users,number',
+        'number'=>'required|digits:10|unique:users,number',
     ]
-    ,['name.required'=>'name is required'],
+         ,['name.required'=>'name is required'],
         ['email.required'=>'email is required'],
         ['email.unique'=>'email already taken'],
+        [ 'email.min'=>'email must be 10 characters at least'],
        [ 'password.required'=>'password is required'],
+       [ 'password.min'=>'password must be 8 characters at least'],
        ['number.required'=>'number is required'],
        ['number.unique'=>'number already taken'],
+       ['number.digits'=>'number must be 10 characters.'],
+
 );
-    $input = $request->all();
-    $input['password'] = Hash::make($input['password']);
-    $input['admin'] = false;
-    $user = User::create($input);
-    $success['token'] = $user->createToken('kareem')->accessToken;
-    $success['name'] = $user->name;
 
+        $input = $request->all();
+        $input['password'] = Hash::make($input['password']);
+        $input['admin'] = false;
+        $user = User::create($input);
+        $success['token'] = $user->createToken('kareem')->accessToken;
+        $success['name'] = $user->name;
 
-       $message="Registration completed";
-        return response()->json(
-            [
-                'status'=>1,
-                'message'=>$message,
-                'data'=>$success,
-            ]
-        );
+        $message = "Registration completed";
+        return response()->json([
+            'status' => "200",
+            'message' => $message,
+            'data' => $success,
+        ]);
    }
 
 

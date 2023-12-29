@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('company');
             $table->integer('quantity');
-            $table->date('ex_date');
+            $table->date('ex_date')->nullable();;
             $table->integer('price');
             $table->integer('warehouse_id')->unsigned();
             $table->string('warehouse_name');
