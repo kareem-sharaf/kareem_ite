@@ -50,13 +50,13 @@ class orderController extends Controller
 
 //REPLACE ID WITH NAME
 //and date
-    public function show_all_orders_to_pharmacy()
+    public function show_all_orders_to_pharmacy()//done
     {
         $user = auth()->user();
         $id = $user->id;
 
         $order = Order::where('user_id', $id)
-        ->select('warehouse_name', 'year', 'month')
+        ->select('id','warehouse_name','status','pay_status', 'year', 'month')
         ->get();
         $message = "this is the all orders";
 
@@ -92,7 +92,7 @@ class orderController extends Controller
     ]);
 }
 //REPLACE ID WITH NAME
-public function search_to_order_for_pharmacy($order_id)
+public function show_one_order_to_pharmacy($order_id)//done
 {
     $user = auth()->user();
     $id = $user->id;
@@ -222,18 +222,15 @@ public function create_order(request $request)
         $order->year = Carbon::now()->year;
         $order->month = Carbon::now()->month;
 
-        $content = [
-            'pharmacy_name' => $order->pharmacy_name,
-            'warehouse_name' => $user->name,
-            'year' => Carbon::now()->year,
-            'month' => Carbon::now()->month
-        ];
+        $content = $order->content;
         if ($order->status === 'done' && $order->pay_status === 'done') {
             $report = new Report();
             $report->pharmacy_id = $order->user_id;
             $report->warehouse_id = $id;
             $report->pharmacy_name = $order->pharmacy_name;
             $report->warehouse_name = $user->name;
+            $report->month = $order->month;
+            $report->year = $order->year;
             $report->content = json_encode($content);
             $report->save();
         }

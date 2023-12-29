@@ -294,7 +294,7 @@ public function show_all_warehouses()//done
     }
 //REPLACE ID WITH NAME
 //MAKE IT MORE CLEAN
-public function add_or_delete_from_favorites(request $request)
+public function add_or_delete_from_favorites(request $request)//done
 {
     $pharmacy_id=auth()->id();
     $warehouse_id=Product::where('id',$request->id)->get('warehouse_id')->first();
@@ -348,7 +348,7 @@ return response()->json([
 }
 
 
-public function show_my_favorites()
+public function show_my_favorites()//done
 {
 
 
@@ -356,7 +356,7 @@ public function show_my_favorites()
 
 // $favorite=Favorite::where('pharmacy_id', $pharmacy_id)->get('pharmacy_name')->first();
 // dd($favorite);
-    $favorite=Favorite::where('pharmacy_id', $pharmacy_id)->get()->first();
+    $favorite=Favorite::where('pharmacy_id', $pharmacy_id)->get();
 
     if($favorite==null)
     {

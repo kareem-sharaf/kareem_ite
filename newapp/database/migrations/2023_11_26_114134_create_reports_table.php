@@ -17,6 +17,8 @@ return new class extends Migration
             $table->integer('warehouse_id')->unsigned()->nullable();
             $table->string('pharmacy_name')->nullable();
             $table->string('warehouse_name')->nullable();
+            $table->string('year');
+            $table->string('month');
             $table->json('content');
             $table->timestamps();
             $table->foreign('pharmacy_id')->references('id')->on('users')->onDelete('cascade');
