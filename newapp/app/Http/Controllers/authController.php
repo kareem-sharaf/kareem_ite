@@ -17,7 +17,7 @@ class authController extends Controller
 
     //functions for warehouse
 
-   public function register_warehouse(Request $request)
+   public function register_warehouse(Request $request)//done
    {
         $request->validate([
             'name'=>'required',
@@ -56,7 +56,7 @@ class authController extends Controller
 
 
 
-   public function register_pharmacy(Request $request)
+   public function register_pharmacy(Request $request)//done
    {
     $request->validate([
         'name'=>'required',
@@ -95,7 +95,7 @@ class authController extends Controller
 
 
 
-   public function login_warehouse(Request $request)
+   public function login_warehouse(Request $request)//done
    {
     if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
         $user = Auth::user();
@@ -130,7 +130,7 @@ class authController extends Controller
 
 
 
-   public function login_pharmacy(Request $request)
+   public function login_pharmacy(Request $request)//done
 {
 
 
@@ -173,7 +173,7 @@ else{
 
 
 
-public function logout(Request $request)
+public function logout(Request $request)//done
 {
 
 $token= Auth::user()->token();
@@ -182,7 +182,7 @@ $token->revoke();
 
  return response()->json(
      [
-         'status'=>1,
+         'status'=>200,
          'message'=>'logout success',
          'data'=>[],
 
@@ -193,7 +193,7 @@ $token->revoke();
 
 
 
-   public function warehouse_forget(Request $request)
+   public function warehouse_forget(Request $request)//done
 {
     $user = User::where('email', $request->input('email'))
                 ->where('number', $request->input('number'))
@@ -221,7 +221,7 @@ $token->revoke();
 
 
 
-public function pharmacy_forget(Request $request)
+public function pharmacy_forget(Request $request)//done
 {
     $user = User::where('email', $request->input('email'))
     ->where('number', $request->input('number'))
@@ -247,7 +247,7 @@ public function pharmacy_forget(Request $request)
 
 
 
-public function reset_password(Request $request)
+public function reset_password(Request $request)//done
 {
     $user = auth()->user();
 
@@ -266,35 +266,51 @@ public function reset_password(Request $request)
 
 
 
-    public function edit_info(Request $request){
+    public function edit_info(Request $request){//done
         $user = auth()->user();
 
-        if($request->has('name')){
-            $user->name = $request->input('name');
-        }
-
-        if($request->has('password')){
-            $user->password = bcrypt($request->input('password'));
-        }
-
-        if($request->has('number')){
-            $user->number = $request->input('number');
-        }
-
-        $user->save();
-
-        $message = "the information updated successfully";
-        return response()->json([
-            'status' => 1,
-            'message' => $message,
-        ]);
+    if($request->has('name')){
+        $user->name = $request->input('name');
     }
 
+    if($request->has('password')){
+        $user->password = bcrypt($request->input('password'));
+    }
+
+    if($request->has('number')){
+        if(User::where('number', $request->input('number'))->where('id', '!=', $user->id)->exists()){
+            return response()->json([
+                'status' => 0,
+                'message' => 'Phone number already exists',
+            ]);
+        }
+        $user->number = $request->input('number');
+    }
+
+    if($request->has('email')){
+        if(User::where('email', $request->input('email'))->where('id', '!=', $user->id)->exists()){
+            return response()->json([
+                'status' => 0,
+                'message' => 'Email already exists',
+            ]);
+        }
+        $user->email = $request->input('email');
+    }
+
+    $user->save();
+
+    $message = "the information updated successfully";
+    return response()->json([
+        'status' => 1,
+        'message' => $message,
+    ]);
+}
 
 
 
 
-    public function delete_the_user(Request $request){
+
+    public function delete_the_user(Request $request){//done
         $user = auth()->user();
         $user->delete();
         $message = "The user deleted successfully.";

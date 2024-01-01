@@ -17,18 +17,18 @@ Route::post('/info',function(request $request)
 
 
 //Routes for Auth.
-Route::post('/warehouse/register',[App\Http\Controllers\authController::class,'register_warehouse']);
-Route::post('/warehouse/login',[App\Http\Controllers\authController::class,'login_warehouse']);
-Route::post('/pharmacy/register',[App\Http\Controllers\authController::class,'register_pharmacy']);
-Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login_pharmacy']);
-Route::post('/warehouse/forget',[App\Http\Controllers\authController::class,'warehouse_forget']);
-Route::post('/pharmacy/forget',[App\Http\Controllers\authController::class,'pharmacy_forget']);
+Route::post('/warehouse/register',[App\Http\Controllers\authController::class,'register_warehouse']);//done
+Route::post('/warehouse/login',[App\Http\Controllers\authController::class,'login_warehouse']);//done
+Route::post('/pharmacy/register',[App\Http\Controllers\authController::class,'register_pharmacy']);//done
+Route::post('/pharmacy/login',[App\Http\Controllers\authController::class,'login_pharmacy']);//done
+Route::post('/warehouse/forget',[App\Http\Controllers\authController::class,'warehouse_forget']);//done
+Route::post('/pharmacy/forget',[App\Http\Controllers\authController::class,'pharmacy_forget']);//done
 
 Route::middleware('auth:api')->group( function () {
-Route::get('/logout',[App\Http\Controllers\authController::class,'logout']);
-Route::post('/reset_password',[App\Http\Controllers\authController::class,'reset_password']);
-Route::post('/edit_information',[App\Http\Controllers\authController::class,'edit_info']);
-Route::delete('/delete_user',[App\Http\Controllers\authController::class,'delete_the_user']);
+Route::get('/logout',[App\Http\Controllers\authController::class,'logout']);//done
+Route::post('/reset_password',[App\Http\Controllers\authController::class,'reset_password']);//done
+Route::post('/edit_information',[App\Http\Controllers\authController::class,'edit_info']);//done
+Route::delete('/delete_user',[App\Http\Controllers\authController::class,'delete_the_user']);//done
 });
 //*********
 
@@ -54,6 +54,10 @@ Route::get('/one_product/{id}',[App\Http\Controllers\ProductController::class,'s
 Route::get('/pharmacy/searching/{name}',[App\Http\Controllers\ProductController::class,'search_to_product_for_pharmacy']);//done
 Route::get('/show_all_warehouses',[App\Http\Controllers\ProductController::class,'show_all_warehouses']);//done
 Route::get('/show_products_in_warehouse/{id}',[App\Http\Controllers\ProductController::class,'show_products_in_warehouse']);//done
+
+Route::get('/show_types',[App\Http\Controllers\ProductController::class,'show_all_types']);//done
+Route::post('/show_all_products_in_one_type',[App\Http\Controllers\ProductController::class,'show_all_products_in_one_type']);//done
+
 //****************
 
 

@@ -328,7 +328,7 @@ if($favorite==null)
 
 return response()->json([
     'status'=>1,
-    'message'=>'product added to favorite list succsussfully',
+    'message'=>'product added to favorite list successfully',
     'data'=>$data
 ]);
 }
@@ -341,7 +341,7 @@ else
 
 return response()->json([
     'status'=>1,
-    'message'=>'product deleted from favorite list succsussfully',
+    'message'=>'product deleted from favorite list successfully',
     'data'=>$data
 ]);
 }
@@ -362,7 +362,7 @@ public function show_my_favorites()//done
     {
         return response()->json([
             'status'=>0,
-            'message'=>'there is no items in favortie list',
+            'message'=>'there is no items in favorite list',
             'data'=>[]
         ]);
     }
@@ -370,7 +370,7 @@ public function show_my_favorites()//done
     {
         return response()->json([
             'status'=>1,
-            'message'=>'all favorite items returned succsussfully',
+            'message'=>'all favorite items returned successfully',
             'data'=>$favorite
         ]);
     }
@@ -378,5 +378,34 @@ public function show_my_favorites()//done
 }
 
 
+
+
+public function show_all_types()//done
+{
+    $types=Product::get('type');
+
+        return response()->json([
+            'status'=>1,
+            'message'=>'all types items returned successfully',
+            'data'=>$types
+        ]);
+
+
+}
+
+
+
+public function show_all_products_in_one_type(request $request)//done
+{
+    $warehouse_id=$request->warehouse_id;
+    $product=Product::where('warehouse_id', $warehouse_id)
+                      ->where('type',$request->type)
+                        ->get();
+        return response()->json([
+            'status'=>1,
+            'message'=>'all types items returned successfully',
+            'data'=>$product
+        ]);
+}
 
 }
